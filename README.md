@@ -144,9 +144,9 @@ service worker as on GitHub Pages.
 Serve the repository root from a branch (`Settings → Pages → Deploy from a branch`). `.nojekyll` turns off Jekyll.
 GitHub Pages cannot set headers, so `coi-serviceworker.js` (credentialless mode) adds COOP/COEP: on the first visit
 the page registers it and reloads once; afterwards `crossOriginIsolated` is true and wllama runs multi-threaded.
-Not verified yet: the browser pane used for development refuses service-worker registration, so the service-worker
-path (isolation after the reload, the Hugging Face download through the worker) still needs a check in a regular
-browser on the deployed page: `crossOriginIsolated === true` in the console and the "16 threads" chip.
+Live at https://dfgrzyska.github.io/basal-web/. Checked there in Chromium 152: the service worker isolates the page
+(`crossOriginIsolated === true`), the model downloads from Hugging Face through it (1.17 GB in about 25 s), wllama runs
+on 16 threads, and the ticket example gives the validated answers in about 7 s.
 
 Fallback if the service worker causes problems: Cloudflare Pages or Netlify, which read the `_headers` file in the
 repository root and send the same headers for real (the service worker then sees an isolated page and does nothing).
