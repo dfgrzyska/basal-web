@@ -1,0 +1,21 @@
+{
+  "name": "basal-web",
+  "version": "0.1.0",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "vendor": "node tools/vendor.mjs",
+    "serve": "node tools/serve.mjs"
+  },
+  "description": "basal-2.0-mini typed decisions in the browser (wllama, no backend)",
+  "dependencies": {
+    "@fontsource-variable/jetbrains-mono": "5.3.0",
+    "@fontsource-variable/schibsted-grotesk": "5.3.0",
+    "@wllama/wllama": "3.8.1",
+    "echarts": "6.1.0"
+  },
+  "devDependencies": {
+    "coi-serviceworker": "0.1.7"
+  },
+  "private": true,
+  "type": "module"
+}

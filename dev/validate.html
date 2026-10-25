@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>basal-web validation</title>
+<style>
+  body { font: 14px/1.5 system-ui, sans-serif; margin: 16px; background: #fff; color: #111; }
+  pre { background: #f4f4f4; padding: 8px; overflow: auto; max-height: 50vh; font-size: 12px; }
+  button { margin-right: 8px; }
+</style>
+</head>
+<body>
+<h1>basal-web validation</h1>
+<p>Loads the model, then reads the 74 prompts of the format-2 test vectors twice: as text (tokenized by llama.cpp)
+and as the reference token ids. Results are in <code>window.results</code>.</p>
+<p>
+  <button id="load">Load model</button>
+  <button id="probe" disabled>Probe one prompt</button>
+  <button id="run" disabled>Run vectors</button>
+  <button id="examples" disabled>Run examples</button>
+  <button id="tokens">Token-id check</button>
+  <button id="speed">Speed by threads</button>
+  <label><input id="gpu" type="checkbox"> WebGPU</label>
+</p>
+<pre id="out"></pre>
+<script type="module">
+import { BasalEngine, softmax } from '../src/engine.js';
+import { CODE_IDS, decide } from '../src/basal.js';
+import { parse, toPlain } from '../src/ojson.js';
+
+const out = document.getElementById('out');
+const say = (...a) => { out.textContent += a.map((x) => typeof x === 'string' ? x : JSON.stringify(x, null, 1)).join(' ') + '\n'; out.scrollTop = 1e9; };
+const engine = new BasalEngine();
+window.engine = engine;
+window.results = { status: 'idle' };
+
+const vectors = (await (await fetch('../test/data/format2_vectors.jsonl')).text()).split('\n').filter(Boolean).map((l) => toPlain(parse(l)));
+
+document.getElementById('load').onclick = async () => {
+  const t0 = performance.now();
+  window.results.status = 'loading';
+  let last = 0;
+  try {
+    const checks = await engine.load({ gpuLayers: document.getElementById('gpu').checked ? 999 : 0,
+      onProgress: ({ loaded, total }) => { const p = Math.floor(100 * loaded / total); if (p >= last + 10) { last = p; say(`download ${p}%`); } } });
+    window.results.checks = checks;
+    window.results.loadMs = performance.now() - t0;
+    window.results.status = 'loaded';
+    say('loaded in', Math.round(performance.now() - t0), 'ms', checks);
+    for (const b of ['probe', 'run', 'examples']) document.getElementById(b).disabled = false;
+  } catch (e) {
+    window.results.status = 'error: ' + e.message;
+    say('ERROR', e.message, e.stack || '');
+  }
+};
+
+document.getElementById('probe').onclick = async () => {
+  const p = vectors[0].prompts[0];
+  const res = await engine.wllama.createCompletion({ prompt: p.prompt.slice(3), max_tokens: 1, temperature: 0,
+    n_probs: 20, logprobs: 20, post_sampling_probs: false, cache_prompt: false });
+  window.results.probe = res;
+  say(res);
+};
+
+// Exact tokenization check: the completion API takes text only, but the embedding API also takes token ids. With
+// last-token pooling, the text prompt (tokenized by llama.cpp) and the reference ids give the same vector only if
+// they are the same tokens. Runs a separate model instance in embedding mode; ?max=<tokens> limits the prompts.
+document.getElementById('tokens').onclick = async () => {
+  const { Wllama } = await import('../vendor/wllama/index.js');
+  const params = new URLSearchParams(location.search);
+  const max = Number(params.get('max') || 1e9);
+  const also = new Set((params.get('also') || '').split(',').filter(Boolean)); // "id:n" prompts above max
+  window.results.status = 'token check';
+  const w = new Wllama({ default: new URL('../vendor/wllama/wllama.wasm', import.meta.url).href },
+    { logger: { debug() {}, log() {}, warn: console.warn, error: console.error } });
+  const { modelUrl } = await import('../src/engine.js');
+  const ctx = also.size ? 4352 : Math.min(4352, max + 64); // one ubatch per prompt (pooled embeddings)
+  await w.loadModelFromUrl(modelUrl(), { n_ctx: ctx, n_batch: ctx, n_ubatch: ctx, n_parallel: 1, n_gpu_layers: 0,
+    embeddings: true, pooling_type: 'last', flash_attn: true });
+  const rows = [];
+  for (const v of vectors) {
+    for (const [n, p] of v.prompts.entries()) {
+      if (p.input_ids.length > max && !also.has(`${v.id}:${n}`)) continue;
+      const row = { id: v.id, n, ids: p.input_ids.length };
+      try {
+        const a = await w.createEmbedding({ input: p.prompt.slice(3) });
+        const b = await w.createEmbedding({ input: p.input_ids });
+        const ea = a.data[0].embedding, eb = b.data[0].embedding;
+        row.textTokens = a.usage.prompt_tokens;
+        row.idsTokens = b.usage.prompt_tokens;
+        row.maxAbs = Math.max(...ea.map((x, i) => Math.abs(x - eb[i])));
+        row.same = row.textTokens === row.ids && row.idsTokens === row.ids && row.maxAbs === 0;
+      } catch (e) {
+        row.error = e.message;
+      }
+      rows.push(row);
+      say(`tokens ${v.id}#${n} ids=${row.ids} text=${row.textTokens} idsTok=${row.idsTokens} maxAbs=${row.maxAbs} same=${row.same} ${row.error || ''}`);
+    }
+  }
+  await w.exit();
+  window.results.tokens = rows;
+  await fetch('../dev/out/tokens.json', { method: 'PUT', body: JSON.stringify({ rows }) });
+  window.results.status = 'token check done';
+};
+
+// Prompt-processing speed by thread count, cold (no prompt cache): a short prompt (pl-tool, 223 tokens, twice: the
+// first call warms up) and a long one (pl-choice-151, 1,197 tokens). ?threads=4,8 picks the counts.
+document.getElementById('speed').onclick = async () => {
+  window.results.status = 'speed';
+  const counts = (new URLSearchParams(location.search).get('threads') || '4,8,10,16,20').split(',').map(Number);
+  const short = vectors.find((v) => v.id === 'pl-tool').prompts[0];
+  const long = vectors.find((v) => v.id === 'pl-choice-151').prompts[0];
+  const rows = [];
+  for (const n of counts) {
+    const e = new BasalEngine();
+    const t0 = performance.now();
+    await e.load({ nThreads: n });
+    const row = { threads: e.checks.threads, loadMs: Math.round(performance.now() - t0) };
+    for (const [name, p, reps] of [['short', short, 2], ['long', long, 1]]) {
+      for (let i = 0; i < reps; i++) await e.codeLogprobs(p.prompt, p.code_ids.length, { cache: false });
+      const l = e.log.at(-1);
+      row[name] = { tokens: l.evaluated, ms: Math.round(l.promptMs), tps: +(1000 * l.evaluated / l.promptMs).toFixed(1) };
+    }
+    await e.unload();
+    rows.push(row);
+    say('speed', row);
+  }
+  window.results.speed = rows;
+  await fetch('../dev/out/speed.json', { method: 'PUT', body: JSON.stringify({ ua: navigator.userAgent,
+    cores: navigator.hardwareConcurrency, rows }) });
+  window.results.status = 'speed done';
+};
+
+// The requests of test/data/requests.jsonl through decide(), with the calibration basal-serve used for its reference.
+document.getElementById('examples').onclick = async () => {
+  window.results.status = 'running examples';
+  const cal = await (await fetch('../calibration/CALIBRATION.llamacpp.json')).json();
+  const reqs = (await (await fetch('../test/data/requests.jsonl')).text()).split('\n').filter(Boolean).map(parse);
+  const rows = [];
+  for (const r of reqs) {
+    const n0 = engine.log.length;
+    const t0 = performance.now();
+    try {
+      const res = await decide(r.get('request'), { readout: engine.readout, calibration: cal });
+      rows.push({ id: r.get('id'), ...res, wall_ms: performance.now() - t0, readouts: engine.log.slice(n0) });
+      say(r.get('id'), Object.fromEntries(Object.entries(res.answers).map(([k, a]) => [k, a[a.type] ?? a.selected])),
+        Math.round(performance.now() - t0), 'ms');
+    } catch (e) {
+      rows.push({ id: r.get('id'), error: e.message });
+      say(r.get('id'), 'ERROR', e.message);
+    }
+  }
+  window.results.examples = rows;
+  await fetch('../dev/out/examples.json', { method: 'PUT', body: JSON.stringify({ checks: window.results.checks, rows }) });
+  window.results.status = 'examples done';
+};
+
+document.getElementById('run').onclick = async () => {
+  window.results.status = 'running';
+  const rows = [];
+  for (const v of vectors) {
+    for (const [n, p] of v.prompts.entries()) {
+      const k = p.code_ids.length;
+      const row = { id: v.id, n, k, ids: p.input_ids.length };
+      try {
+        // the text prompt (llama.cpp tokenizes it), then the reference token ids with the prompt cache on: equal
+        // tokens reuse all but the last position (cache_n = n - 1) and give the same log-probabilities
+        const zText = await engine.codeLogprobs(p.prompt, k);
+        const logText = engine.log.at(-1);
+        row.textTokens = logText.promptTokens;
+        row.textMs = Math.round(logText.ms);
+        row.evaluated = logText.evaluated;
+        row.top = logText.top;
+        row.codeMass = logText.codeMass;
+        row.pText = softmax(zText);
+        try {
+          const res = await engine.wllama.createCompletion({ prompt: p.input_ids, max_tokens: 1, temperature: 0,
+            n_probs: Math.max(20, k + 10), logprobs: Math.max(20, k + 10), post_sampling_probs: false, cache_prompt: true });
+          const top = res.choices[0].logprobs.content[0].top_logprobs;
+          const got = new Map(top.map((t) => [t.id, t.logprob]));
+          row.idsTokens = res.usage?.prompt_tokens;
+          row.idsCached = res.timings?.cache_n;
+          row.sameTokens = row.idsTokens === row.ids && row.textTokens === row.ids && row.idsCached === row.ids - 1;
+          row.pIds = softmax(CODE_IDS.slice(0, k).map((id) => got.get(id) ?? -1e9));
+          row.maxDiff = Math.max(...row.pIds.map((x, i) => Math.abs(x - row.pText[i])));
+        } catch (e) {
+          row.idsError = e.message;
+        }
+      } catch (e) {
+        row.error = e.message;
+      }
+      rows.push(row);
+      say(`${v.id}#${n} k=${k} ids=${row.ids} text=${row.textTokens} cached=${row.idsCached ?? '-'} same=${row.sameTokens} ms=${row.textMs} top=${row.top?.token} maxDiff=${row.maxDiff ?? row.idsError ?? row.error}`);
+    }
+  }
+  window.results.rows = rows;
+  await fetch('../dev/out/vectors.json', { method: 'PUT', body: JSON.stringify({ checks: window.results.checks, rows }) });
+  window.results.status = 'done';
+  say('done');
+};
+</script>
+</body>
+</html>

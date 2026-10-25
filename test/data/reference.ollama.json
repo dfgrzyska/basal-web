@@ -1,0 +1,1390 @@
+{
+ "server": {
+  "name": "hf-ref",
+  "release_date": "2026-10-14",
+  "description": "basal typed-decision model (choice / noul / score / act / multi / tool), Polish and English",
+  "mode": "ollama",
+  "early_exit": [],
+  "temperature_per_prim": {
+   "choice": 1.6339154532410998,
+   "noul": 1.8340080864093422,
+   "score": 1.9430638823072113
+  },
+  "prompt_format": 2,
+  "orders": 1
+ },
+ "rows": [
+  {
+   "id": "questions-01",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Nie, po upływie 14 dni.",
+     "probabilities": {
+      "Tak, w terminie 14 dni.": 0.08455779403448105,
+      "Nie, po upływie 14 dni.": 0.9154422283172607
+     },
+     "confidence": 0.9154422283172607
+    }
+   },
+   "usage": {
+    "input_tokens": 148,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 30555.82,
+    "longest_prompt_tokens": 148
+   },
+   "wall_ms": 30557.1
+  },
+  {
+   "id": "questions-02",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Wsparcie techniczne bankowości elektronicznej",
+     "probabilities": {
+      "Reklamacje kart płatniczych": 0.010348406620323658,
+      "Wsparcie techniczne bankowości elektronicznej": 0.979971706867218,
+      "Kredyty hipoteczne": 0.009679715149104595,
+      "Obsługa lokat": 9.088082464359104e-08
+     },
+     "confidence": 0.979971706867218
+    }
+   },
+   "usage": {
+    "input_tokens": 136,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 110.25,
+    "longest_prompt_tokens": 136
+   },
+   "wall_ms": 111.3
+  },
+  {
+   "id": "questions-03",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "400 zł",
+     "probabilities": {
+      "760 zł": 0.08431130647659302,
+      "800 zł": 0.037460483610630035,
+      "400 zł": 0.6237565279006958,
+      "0 zł, brak zgody przełożonego": 0.25447162985801697
+     },
+     "confidence": 0.6237565279006958
+    }
+   },
+   "usage": {
+    "input_tokens": 148,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 31.57,
+    "longest_prompt_tokens": 148
+   },
+   "wall_ms": 32.6
+  },
+  {
+   "id": "questions-04",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Negatywny",
+     "probabilities": {
+      "Pozytywny": 0.04705411195755005,
+      "Neutralny": 0.021839100867509842,
+      "Negatywny": 0.9311067461967468
+     },
+     "confidence": 0.9311067461967468
+    }
+   },
+   "usage": {
+    "input_tokens": 119,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.93,
+    "longest_prompt_tokens": 119
+   },
+   "wall_ms": 25.8
+  },
+  {
+   "id": "questions-05",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "31 lipca 2026 r.",
+     "probabilities": {
+      "10 lipca 2026 r.": 0.07879601418972015,
+      "31 lipca 2026 r.": 0.6771271824836731,
+      "30 czerwca 2026 r.": 0.07006209343671799,
+      "31 sierpnia 2026 r.": 0.17401476204395294
+     },
+     "confidence": 0.6771271824836731
+    }
+   },
+   "usage": {
+    "input_tokens": 154,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.91,
+    "longest_prompt_tokens": 154
+   },
+   "wall_ms": 25.8
+  },
+  {
+   "id": "questions-06",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Nie",
+     "probabilities": {
+      "Tak": 0.06590908020734787,
+      "Nie": 0.9340909123420715
+     },
+     "confidence": 0.9340909123420715
+    }
+   },
+   "usage": {
+    "input_tokens": 109,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 25.13,
+    "longest_prompt_tokens": 109
+   },
+   "wall_ms": 26.1
+  },
+  {
+   "id": "questions-07",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Naprawa płatna",
+     "probabilities": {
+      "Naprawa gwarancyjna": 0.4475065767765045,
+      "Naprawa płatna": 0.4537842869758606,
+      "Odmowa, gwarancja wygasła": 0.09870918095111847
+     },
+     "confidence": 0.4537842869758606
+    }
+   },
+   "usage": {
+    "input_tokens": 133,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.79,
+    "longest_prompt_tokens": 133
+   },
+   "wall_ms": 25.8
+  },
+  {
+   "id": "questions-08",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Tak",
+     "probabilities": {
+      "Tak": 0.7941077947616577,
+      "Nie, była opóźniona": 0.2058921456336975
+     },
+     "confidence": 0.7941077947616577
+    }
+   },
+   "usage": {
+    "input_tokens": 125,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 25.37,
+    "longest_prompt_tokens": 125
+   },
+   "wall_ms": 26.3
+  },
+  {
+   "id": "questions-09",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Krytyczne",
+     "probabilities": {
+      "Niska pilność": 0.04042574763298035,
+      "Średnia pilność": 0.064215749502182,
+      "Wysoka pilność": 0.3787662088871002,
+      "Krytyczne": 0.5165923237800598
+     },
+     "confidence": 0.5165923237800598
+    }
+   },
+   "usage": {
+    "input_tokens": 123,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.06,
+    "longest_prompt_tokens": 123
+   },
+   "wall_ms": 25.0
+  },
+  {
+   "id": "questions-10",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "20 dni",
+     "probabilities": {
+      "20 dni": 0.9741036891937256,
+      "26 dni": 0.0258963443338871
+     },
+     "confidence": 0.9741036891937256
+    }
+   },
+   "usage": {
+    "input_tokens": 135,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 23.56,
+    "longest_prompt_tokens": 135
+   },
+   "wall_ms": 24.6
+  },
+  {
+   "id": "questions-11",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Billing",
+     "probabilities": {
+      "Billing": 0.9263161420822144,
+      "Technical support": 0.032001838088035583,
+      "Sales": 0.027140337973833084,
+      "Shipping": 0.014541594311594963
+     },
+     "confidence": 0.9263161420822144
+    }
+   },
+   "usage": {
+    "input_tokens": 145,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 26.45,
+    "longest_prompt_tokens": 145
+   },
+   "wall_ms": 27.3
+  },
+  {
+   "id": "questions-12",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Yes",
+     "probabilities": {
+      "Yes": 0.7990155220031738,
+      "No": 0.20098449289798737
+     },
+     "confidence": 0.7990155220031738
+    }
+   },
+   "usage": {
+    "input_tokens": 154,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.83,
+    "longest_prompt_tokens": 154
+   },
+   "wall_ms": 25.9
+  },
+  {
+   "id": "questions-13",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Reject: receipt required",
+     "probabilities": {
+      "Reimburse $48": 0.2555568218231201,
+      "Reimburse $25": 0.16916346549987793,
+      "Reject: receipt required": 0.5342344641685486,
+      "Reimburse $60": 0.04104527086019516
+     },
+     "confidence": 0.5342344641685486
+    }
+   },
+   "usage": {
+    "input_tokens": 184,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 27.7,
+    "longest_prompt_tokens": 184
+   },
+   "wall_ms": 28.5
+  },
+  {
+   "id": "questions-14",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Positive",
+     "probabilities": {
+      "Positive": 0.9510353207588196,
+      "Neutral": 0.026245305314660072,
+      "Negative": 0.022719386965036392
+     },
+     "confidence": 0.9510353207588196
+    }
+   },
+   "usage": {
+    "input_tokens": 129,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 26.04,
+    "longest_prompt_tokens": 129
+   },
+   "wall_ms": 26.9
+  },
+  {
+   "id": "questions-15",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Real incident",
+     "probabilities": {
+      "False positive": 0.07755741477012634,
+      "Real incident": 0.5860998630523682,
+      "Cannot determine": 0.3363427221775055
+     },
+     "confidence": 0.5860998630523682
+    }
+   },
+   "usage": {
+    "input_tokens": 169,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 25.89,
+    "longest_prompt_tokens": 169
+   },
+   "wall_ms": 26.8
+  },
+  {
+   "id": "questions-16",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "No",
+     "probabilities": {
+      "Yes": 0.46052396297454834,
+      "No": 0.5394760966300964
+     },
+     "confidence": 0.5394760966300964
+    }
+   },
+   "usage": {
+    "input_tokens": 153,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 26.72,
+    "longest_prompt_tokens": 153
+   },
+   "wall_ms": 27.6
+  },
+  {
+   "id": "questions-17",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Priority queue",
+     "probabilities": {
+      "Security team": 0.042494047433137894,
+      "Priority queue": 0.9575058221817017,
+      "Standard queue": 8.901103143443834e-08
+     },
+     "confidence": 0.9575058221817017
+    }
+   },
+   "usage": {
+    "input_tokens": 180,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 28.72,
+    "longest_prompt_tokens": 180
+   },
+   "wall_ms": 29.6
+  },
+  {
+   "id": "questions-18",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "20",
+     "probabilities": {
+      "20": 0.5080338716506958,
+      "25": 0.4919660687446594
+     },
+     "confidence": 0.5080338716506958
+    }
+   },
+   "usage": {
+    "input_tokens": 160,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 28.17,
+    "longest_prompt_tokens": 160
+   },
+   "wall_ms": 29.1
+  },
+  {
+   "id": "questions-19",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Low",
+     "probabilities": {
+      "Low": 0.6326100826263428,
+      "Medium": 0.2192305624485016,
+      "High": 0.10015464574098587,
+      "Critical": 0.04800466448068619
+     },
+     "confidence": 0.6326100826263428
+    }
+   },
+   "usage": {
+    "input_tokens": 131,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 25.15,
+    "longest_prompt_tokens": 131
+   },
+   "wall_ms": 26.1
+  },
+  {
+   "id": "questions-20",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "No",
+     "probabilities": {
+      "Yes": 0.28768160939216614,
+      "No": 0.7123183608055115
+     },
+     "confidence": 0.7123183608055115
+    }
+   },
+   "usage": {
+    "input_tokens": 146,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 26.22,
+    "longest_prompt_tokens": 146
+   },
+   "wall_ms": 27.1
+  },
+  {
+   "id": "ch-01",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Wsparcie bankowości elektronicznej",
+     "probabilities": {
+      "Reklamacje kart płatniczych": 0.011377143673598766,
+      "Wsparcie bankowości elektronicznej": 0.976464033126831,
+      "Kredyty i pożyczki": 0.012158660218119621,
+      "Obsługa kont firmowych": 9.056934402451589e-08
+     },
+     "confidence": 0.976464033126831
+    }
+   },
+   "usage": {
+    "input_tokens": 124,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 28.12,
+    "longest_prompt_tokens": 124
+   },
+   "wall_ms": 29.0
+  },
+  {
+   "id": "ch-02",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "823,00 zł",
+     "probabilities": {
+      "600,00 zł": 0.03259779512882233,
+      "738,00 zł": 0.07137701660394669,
+      "646,00 zł": 0.033768896013498306,
+      "823,00 zł": 0.8622562885284424
+     },
+     "confidence": 0.8622562885284424
+    }
+   },
+   "usage": {
+    "input_tokens": 135,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 25.39,
+    "longest_prompt_tokens": 135
+   },
+   "wall_ms": 26.4
+  },
+  {
+   "id": "ch-03",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Odwołanie od decyzji",
+     "probabilities": {
+      "Wniosek o wydanie zaświadczenia": 0.010584782809019089,
+      "Odwołanie od decyzji": 0.9894149303436279,
+      "Skarga na przewlekłość postępowania": 9.173661652539522e-08,
+      "Pozew o zapłatę": 9.173661652539522e-08
+     },
+     "confidence": 0.9894149303436279
+    }
+   },
+   "usage": {
+    "input_tokens": 142,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.66,
+    "longest_prompt_tokens": 142
+   },
+   "wall_ms": 25.6
+  },
+  {
+   "id": "ch-04",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "10% wynagrodzenia",
+     "probabilities": {
+      "Brak premii": 0.03554002195596695,
+      "5% wynagrodzenia": 0.11010193079710007,
+      "10% wynagrodzenia": 0.8543580174446106
+     },
+     "confidence": 0.8543580174446106
+    }
+   },
+   "usage": {
+    "input_tokens": 168,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 27.9,
+    "longest_prompt_tokens": 168
+   },
+   "wall_ms": 28.8
+  },
+  {
+   "id": "ch-05",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Billing and payments",
+     "probabilities": {
+      "Technical support": 0.02551278844475746,
+      "Billing and payments": 0.9076332449913025,
+      "Sales": 0.036011822521686554,
+      "Account security": 0.030842050909996033
+     },
+     "confidence": 0.9076332449913025
+    }
+   },
+   "usage": {
+    "input_tokens": 161,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 31.4,
+    "longest_prompt_tokens": 161
+   },
+   "wall_ms": 32.3
+  },
+  {
+   "id": "ch-06",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Economy",
+     "probabilities": {
+      "Economy": 0.5536335706710815,
+      "Premium economy": 0.3825761675834656,
+      "Business": 0.06379029154777527
+     },
+     "confidence": 0.5536335706710815
+    }
+   },
+   "usage": {
+    "input_tokens": 184,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 27.23,
+    "longest_prompt_tokens": 184
+   },
+   "wall_ms": 28.2
+  },
+  {
+   "id": "ch-07",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Negatywny",
+     "probabilities": {
+      "Pozytywny": 0.024267753586173058,
+      "Negatywny": 0.9546796679496765,
+      "Neutralny": 0.021052559837698936
+     },
+     "confidence": 0.9546796679496765
+    }
+   },
+   "usage": {
+    "input_tokens": 108,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.15,
+    "longest_prompt_tokens": 108
+   },
+   "wall_ms": 25.2
+  },
+  {
+   "id": "ch-08",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "choice",
+     "choice": "Send the draft statement of work",
+     "probabilities": {
+      "Sign the NDA": 0.03328061103820801,
+      "Send the draft statement of work": 0.8603162169456482,
+      "Schedule a legal review meeting": 0.08650622516870499,
+      "Issue an invoice": 0.019897034391760826
+     },
+     "confidence": 0.8603162169456482
+    }
+   },
+   "usage": {
+    "input_tokens": 171,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 26.95,
+    "longest_prompt_tokens": 171
+   },
+   "wall_ms": 27.8
+  },
+  {
+   "id": "yn-01",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "noul",
+     "noul": 0.6041063666343689,
+     "probabilities": {
+      "true": 0.6041063666343689,
+      "false": 0.39589357376098633
+     },
+     "confidence": 0.6041063666343689
+    }
+   },
+   "usage": {
+    "input_tokens": 150,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 31.32,
+    "longest_prompt_tokens": 150
+   },
+   "wall_ms": 32.2
+  },
+  {
+   "id": "yn-02",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "noul",
+     "noul": 0.9329596757888794,
+     "probabilities": {
+      "true": 0.9329596757888794,
+      "false": 0.0670403391122818
+     },
+     "confidence": 0.9329596757888794
+    }
+   },
+   "usage": {
+    "input_tokens": 132,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.43,
+    "longest_prompt_tokens": 132
+   },
+   "wall_ms": 25.3
+  },
+  {
+   "id": "yn-03",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "noul",
+     "noul": 0.9797835350036621,
+     "probabilities": {
+      "true": 0.9797835350036621,
+      "false": 0.02021646872162819
+     },
+     "confidence": 0.9797835350036621
+    }
+   },
+   "usage": {
+    "input_tokens": 132,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 29.64,
+    "longest_prompt_tokens": 132
+   },
+   "wall_ms": 30.5
+  },
+  {
+   "id": "yn-04",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "noul",
+     "noul": 0.1659117192029953,
+     "probabilities": {
+      "true": 0.1659117192029953,
+      "false": 0.8340883255004883
+     },
+     "confidence": 0.8340883255004883
+    }
+   },
+   "usage": {
+    "input_tokens": 185,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 28.21,
+    "longest_prompt_tokens": 185
+   },
+   "wall_ms": 29.2
+  },
+  {
+   "id": "yn-05",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "noul",
+     "noul": 0.9116250872612,
+     "probabilities": {
+      "true": 0.9116250872612,
+      "false": 0.08837494254112244
+     },
+     "confidence": 0.9116250872612
+    }
+   },
+   "usage": {
+    "input_tokens": 175,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 28.68,
+    "longest_prompt_tokens": 175
+   },
+   "wall_ms": 29.6
+  },
+  {
+   "id": "yn-06",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "noul",
+     "noul": 0.034677475690841675,
+     "probabilities": {
+      "true": 0.034677475690841675,
+      "false": 0.9653224945068359
+     },
+     "confidence": 0.9653224945068359
+    }
+   },
+   "usage": {
+    "input_tokens": 115,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 25.29,
+    "longest_prompt_tokens": 115
+   },
+   "wall_ms": 26.1
+  },
+  {
+   "id": "yn-07",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "noul",
+     "noul": 0.936163067817688,
+     "probabilities": {
+      "true": 0.936163067817688,
+      "false": 0.06383693963289261
+     },
+     "confidence": 0.936163067817688
+    }
+   },
+   "usage": {
+    "input_tokens": 166,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 27.13,
+    "longest_prompt_tokens": 166
+   },
+   "wall_ms": 28.0
+  },
+  {
+   "id": "yn-08",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "noul",
+     "noul": 0.5661198496818542,
+     "probabilities": {
+      "true": 0.5661198496818542,
+      "false": 0.43388012051582336
+     },
+     "confidence": 0.5661198496818542
+    }
+   },
+   "usage": {
+    "input_tokens": 137,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 25.4,
+    "longest_prompt_tokens": 137
+   },
+   "wall_ms": 26.4
+  },
+  {
+   "id": "sc-01",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "score",
+     "score": 2.6290208622813225,
+     "legend": {
+      "0": "niska — można zaplanować",
+      "1": "średnia — w ciągu kilku dni",
+      "2": "wysoka — dziś",
+      "3": "krytyczna — natychmiast"
+     },
+     "probabilities": {
+      "0": 0.049696557223796844,
+      "1": 0.04486387223005295,
+      "2": 0.1321616768836975,
+      "3": 0.7732778787612915
+     },
+     "confidence": 0.7732778787612915
+    }
+   },
+   "usage": {
+    "input_tokens": 148,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 29.37,
+    "longest_prompt_tokens": 148
+   },
+   "wall_ms": 30.3
+  },
+  {
+   "id": "sc-02",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "score",
+     "score": 1.5031017065048218,
+     "legend": {
+      "0": "niska — można zaplanować",
+      "1": "średnia — w ciągu kilku dni",
+      "2": "wysoka — dziś",
+      "3": "krytyczna — natychmiast"
+     },
+     "probabilities": {
+      "0": 0.26265379786491394,
+      "1": 0.2587818503379822,
+      "2": 0.19137319922447205,
+      "3": 0.28719115257263184
+     },
+     "confidence": 0.28719115257263184
+    }
+   },
+   "usage": {
+    "input_tokens": 126,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 25.28,
+    "longest_prompt_tokens": 126
+   },
+   "wall_ms": 26.3
+  },
+  {
+   "id": "sc-03",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "score",
+     "score": 2.857600763440132,
+     "legend": {
+      "0": "bardzo niezadowolony",
+      "1": "niezadowolony",
+      "2": "neutralny",
+      "3": "zadowolony",
+      "4": "bardzo zadowolony"
+     },
+     "probabilities": {
+      "0": 0.02891654521226883,
+      "1": 0.032192617654800415,
+      "2": 0.11398757249116898,
+      "3": 0.7021800875663757,
+      "4": 0.12272318452596664
+     },
+     "confidence": 0.7021800875663757
+    }
+   },
+   "usage": {
+    "input_tokens": 112,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 27.01,
+    "longest_prompt_tokens": 112
+   },
+   "wall_ms": 28.1
+  },
+  {
+   "id": "sc-04",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "score",
+     "score": 0.35527089424431324,
+     "legend": {
+      "0": "very dissatisfied",
+      "1": "dissatisfied",
+      "2": "neutral",
+      "3": "satisfied",
+      "4": "very satisfied"
+     },
+     "probabilities": {
+      "0": 0.8009905219078064,
+      "1": 0.12019360810518265,
+      "2": 0.026544027030467987,
+      "3": 0.02709805779159069,
+      "4": 0.025173764675855637
+     },
+     "confidence": 0.8009905219078064
+    }
+   },
+   "usage": {
+    "input_tokens": 159,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 26.78,
+    "longest_prompt_tokens": 159
+   },
+   "wall_ms": 27.7
+  },
+  {
+   "id": "sc-05",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "score",
+     "score": 0.479990616440773,
+     "legend": {
+      "0": "low",
+      "1": "medium",
+      "2": "high"
+     },
+     "probabilities": {
+      "0": 0.667248547077179,
+      "1": 0.18551234900951385,
+      "2": 0.14723913371562958
+     },
+     "confidence": 0.667248547077179
+    }
+   },
+   "usage": {
+    "input_tokens": 147,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 26.52,
+    "longest_prompt_tokens": 147
+   },
+   "wall_ms": 27.5
+  },
+  {
+   "id": "sc-06",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "score",
+     "score": 1.5952471196651459,
+     "legend": {
+      "0": "low",
+      "1": "medium",
+      "2": "high"
+     },
+     "probabilities": {
+      "0": 0.07878358662128448,
+      "1": 0.24718579649925232,
+      "2": 0.6740306615829468
+     },
+     "confidence": 0.6740306615829468
+    }
+   },
+   "usage": {
+    "input_tokens": 154,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.13,
+    "longest_prompt_tokens": 154
+   },
+   "wall_ms": 25.2
+  },
+  {
+   "id": "sc-07",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "score",
+     "score": 1.6095765680074692,
+     "legend": {
+      "0": "całkowicie błędna",
+      "1": "częściowo poprawna",
+      "2": "całkowicie poprawna"
+     },
+     "probabilities": {
+      "0": 0.10380415618419647,
+      "1": 0.18281517922878265,
+      "2": 0.7133806943893433
+     },
+     "confidence": 0.7133806943893433
+    }
+   },
+   "usage": {
+    "input_tokens": 111,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 24.74,
+    "longest_prompt_tokens": 111
+   },
+   "wall_ms": 25.7
+  },
+  {
+   "id": "sc-08",
+   "model": "hf-ref",
+   "answers": {
+    "q": {
+     "type": "score",
+     "score": 0.7909725904464722,
+     "legend": {
+      "0": "completely wrong",
+      "1": "partially correct",
+      "2": "completely correct"
+     },
+     "probabilities": {
+      "0": 0.39017409086227417,
+      "1": 0.42867931723594666,
+      "2": 0.18114663660526276
+     },
+     "confidence": 0.42867931723594666
+    }
+   },
+   "usage": {
+    "input_tokens": 144,
+    "output_tokens": 0,
+    "questions": 1,
+    "branches": 1,
+    "latency_ms": 28.96,
+    "longest_prompt_tokens": 144
+   },
+   "wall_ms": 29.8
+  },
+  {
+   "id": "cx-01-ticket-fan-out",
+   "model": "hf-ref",
+   "answers": {
+    "category": {
+     "type": "choice",
+     "choice": "complaint",
+     "probabilities": {
+      "complaint": 0.9521896243095398,
+      "delivery": 0.012281122617423534,
+      "invoice": 8.84827429104007e-08,
+      "other": 0.03552916646003723
+     },
+     "confidence": 0.9521896243095398
+    },
+    "needs_photo": {
+     "type": "noul",
+     "noul": 0.7760934829711914,
+     "probabilities": {
+      "true": 0.7760934829711914,
+      "false": 0.22390659153461456
+     },
+     "confidence": 0.7760934829711914
+    },
+    "tone": {
+     "type": "score",
+     "score": 1.2394231259822845,
+     "legend": {
+      "calm": "calm: spokojna",
+      "annoyed": "annoyed: zirytowana",
+      "angry": "angry: bardzo zdenerwowana"
+     },
+     "probabilities": {
+      "calm": 0.18414025008678436,
+      "annoyed": 0.39229634404182434,
+      "angry": 0.4235633909702301
+     },
+     "confidence": 0.4235633909702301
+    }
+   },
+   "usage": {
+    "input_tokens": 502,
+    "output_tokens": 0,
+    "questions": 3,
+    "branches": 3,
+    "latency_ms": 66.66,
+    "longest_prompt_tokens": 175
+   },
+   "wall_ms": 67.6
+  },
+  {
+   "id": "cx-02-web-agent",
+   "model": "hf-ref",
+   "answers": {
+    "operation": {
+     "type": "choice",
+     "choice": "BLOCKED",
+     "probabilities": {
+      "CLICK": 0.04070209339261055,
+      "TYPE": 0.03275677189230919,
+      "DONE": 0.01944519393146038,
+      "BLOCKED": 0.9070959091186523
+     },
+     "confidence": 0.9070959091186523
+    },
+    "click_target": {
+     "type": "choice",
+     "choice": "2",
+     "probabilities": {
+      "1": 0.02894844487309456,
+      "2": 0.9710513949394226,
+      "3": 9.014258495199101e-08
+     },
+     "confidence": 0.9710513949394226
+    }
+   },
+   "usage": {
+    "input_tokens": 486,
+    "output_tokens": 0,
+    "questions": 2,
+    "branches": 2,
+    "latency_ms": 51.85,
+    "longest_prompt_tokens": 262
+   },
+   "wall_ms": 52.7
+  },
+  {
+   "id": "cx-03-deadline-decomposed",
+   "model": "hf-ref",
+   "answers": {
+    "last_day": {
+     "type": "choice",
+     "choice": "2025-06-24",
+     "probabilities": {
+      "2025-06-19": 0.11538175493478775,
+      "2025-06-20": 0.12908481061458588,
+      "2025-06-23": 0.07868384569883347,
+      "2025-06-24": 0.6768495440483093
+     },
+     "confidence": 0.6768495440483093
+    },
+    "filing_date": {
+     "type": "choice",
+     "choice": "2025-06-20",
+     "probabilities": {
+      "2025-06-20": 0.9562954902648926,
+      "2025-06-24": 0.043704498559236526
+     },
+     "confidence": 0.9562954902648926
+    },
+    "in_time": {
+     "type": "noul",
+     "noul": 0.5339673757553101,
+     "probabilities": {
+      "true": 0.5339673757553101,
+      "false": 0.4660326838493347
+     },
+     "confidence": 0.5339673757553101
+    }
+   },
+   "usage": {
+    "input_tokens": 632,
+    "output_tokens": 0,
+    "questions": 3,
+    "branches": 3,
+    "latency_ms": 79.45,
+    "longest_prompt_tokens": 254
+   },
+   "wall_ms": 80.3
+  },
+  {
+   "id": "cx-04-loan-triage",
+   "model": "hf-ref",
+   "answers": {
+    "within_limit": {
+     "type": "noul",
+     "noul": 0.5855215191841125,
+     "probabilities": {
+      "true": 0.5855215191841125,
+      "false": 0.41447851061820984
+     },
+     "confidence": 0.5855215191841125
+    },
+    "risk": {
+     "type": "score",
+     "score": 0.4568915367126465,
+     "legend": {
+      "0": "niskie",
+      "1": "średnie",
+      "2": "wysokie"
+     },
+     "probabilities": {
+      "0": 0.6666406989097595,
+      "1": 0.20982708036899567,
+      "2": 0.12353222817182541
+     },
+     "confidence": 0.6666406989097595
+    },
+    "decision": {
+     "type": "choice",
+     "choice": "approve",
+     "probabilities": {
+      "approve": 0.7256637215614319,
+      "review": 0.17045338451862335,
+      "reject": 0.10388288646936417
+     },
+     "confidence": 0.7256637215614319
+    }
+   },
+   "usage": {
+    "input_tokens": 691,
+    "output_tokens": 0,
+    "questions": 3,
+    "branches": 3,
+    "latency_ms": 68.59,
+    "longest_prompt_tokens": 240
+   },
+   "wall_ms": 69.6
+  },
+  {
+   "id": "cx-05-guard-check",
+   "model": "hf-ref",
+   "answers": {
+    "injection": {
+     "type": "noul",
+     "noul": 0.9240241050720215,
+     "probabilities": {
+      "true": 0.9240241050720215,
+      "false": 0.07597582787275314
+     },
+     "confidence": 0.9240241050720215
+    },
+    "data_request": {
+     "type": "choice",
+     "choice": "other",
+     "probabilities": {
+      "own": 0.022210408002138138,
+      "other": 0.8243153691291809,
+      "public": 0.0868171975016594,
+      "none": 0.06665707379579544
+     },
+     "confidence": 0.8243153691291809
+    },
+    "action": {
+     "type": "choice",
+     "choice": "refuse",
+     "probabilities": {
+      "answer": 8.426973607811306e-08,
+      "refuse": 0.8958238959312439,
+      "verify": 0.10417596995830536
+     },
+     "confidence": 0.8958238959312439
+    }
+   },
+   "usage": {
+    "input_tokens": 484,
+    "output_tokens": 0,
+    "questions": 3,
+    "branches": 3,
+    "latency_ms": 66.75,
+    "longest_prompt_tokens": 172
+   },
+   "wall_ms": 67.7
+  }
+ ]
+}
