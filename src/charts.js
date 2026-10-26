@@ -25,6 +25,7 @@ function theme() {
   const t = (n) => css.getPropertyValue(n).trim();
   return {
     accent: t('--chart-accent'), context: t('--chart-context'), ink: t('--ink'), ink2: t('--ink-2'), muted: t('--muted'),
+    second: t('--chart-2'), neg: t('--div-neg'), seqLo: t('--seq-lo'), seqHi: t('--seq-hi'),
     line: t('--line'), axis: t('--axis'), surface: t('--surface'),
     sans: '"Schibsted Grotesk", system-ui, sans-serif', mono: '"JetBrains Mono", ui-monospace, monospace',
     motion: !matchMedia('(prefers-reduced-motion: reduce)').matches,
@@ -277,6 +278,165 @@ export function readoutChart({ rows }) {
       data: rows.map((r) => ({ value: r.p, itemStyle: { color: r.top ? t.accent : t.context, borderRadius: [4, 4, 0, 0] } })),
       label: { show: true, position: 'top', color: t.ink, fontFamily: t.mono, fontSize: 12, formatter: ({ value }) => pct(value) } }],
   });
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Many rows
+
+const pctAxis = (t, extra = {}) => ({
+  type: 'value', min: 0, max: 1, interval: 0.25, axisLabel: { formatter: (v) => `${Math.round(v * 100)}%`, color: t.muted,
+    fontFamily: t.mono, fontSize: 11 }, splitLine: { lineStyle: { color: t.line } }, axisLine: { show: false },
+  axisTick: { show: false }, ...extra,
+});
+
+/** How often each answer was given: rows [{label, count}], one bar per answer. */
+export function countChart({ rows }) {
+  return (t, width) => {
+    const left = Math.max(90, Math.min(240, Math.round(width * 0.38)));
+    return {
+      ...base(t),
+      height: rows.length * 28 + 30,
+      grid: { left, right: 44, top: 6, bottom: 24 },
+      tooltip: { ...base(t).tooltip, trigger: 'item', formatter: ({ dataIndex }) => `${esc(rows[dataIndex].label)}<br><b>${num(rows[dataIndex].count)}</b>` },
+      xAxis: { type: 'value', minInterval: 1, axisLabel: { color: t.muted, fontFamily: t.mono, fontSize: 11 },
+        splitLine: { lineStyle: { color: t.line } }, axisLine: { show: false }, axisTick: { show: false } },
+      yAxis: { type: 'category', inverse: true, data: rows.map((r) => r.label), axisTick: { show: false },
+        axisLine: { lineStyle: { color: t.axis } }, axisLabel: { color: t.ink, width: left - 14, overflow: 'truncate' } },
+      series: [{ type: 'bar', barMaxWidth: 14, barMinHeight: 2, data: rows.map((r) => r.count),
+        itemStyle: { color: t.accent, borderRadius: [0, 4, 4, 0] },
+        label: { show: true, position: 'right', color: t.ink, fontFamily: t.mono, fontSize: 11, formatter: ({ value }) => num(value) } }],
+    };
+  };
+}
+
+/** Confidence of the answers in ten bins, with the certified threshold marked when there is one. */
+export function histChart({ counts, threshold = null, thresholdLabel = '' }) {
+  return (t) => ({
+    ...base(t),
+    height: 190,
+    grid: { left: 36, right: 16, top: threshold !== null ? 26 : 12, bottom: 28 },
+    tooltip: { ...base(t).tooltip, trigger: 'item', formatter: ({ dataIndex }) =>
+      `${dataIndex * 10}–${dataIndex * 10 + 10}%<br><b>${num(counts[dataIndex])}</b>` },
+    xAxis: pctAxis(t, { splitLine: { show: false } }),
+    yAxis: { type: 'value', minInterval: 1, axisLabel: { color: t.muted, fontFamily: t.mono, fontSize: 11 },
+      splitLine: { lineStyle: { color: t.line } }, axisLine: { show: false }, axisTick: { show: false } },
+    series: [{ type: 'bar', barWidth: '80%', data: counts.map((c, i) => [i / 10 + 0.05, c]),
+      itemStyle: { color: t.accent, borderRadius: [3, 3, 0, 0] },
+      markLine: threshold !== null ? thresholdLine(t, threshold, thresholdLabel) : undefined }],
+  });
+}
+
+/** Confusion matrix: rows the correct answers, columns the model's, counts as cell labels on one blue ramp. */
+export function confusionChart({ keys, matrix }) {
+  return (t, width) => {
+    const max = Math.max(1, ...matrix.flat());
+    const left = Math.max(80, Math.min(200, Math.round(width * 0.3)));
+    const cell = Math.max(26, Math.min(44, Math.round((width - left - 20) / keys.length)));
+    return {
+      ...base(t),
+      height: keys.length * cell + 70,
+      grid: { left, right: 12, top: 8, bottom: 56 },
+      tooltip: { ...base(t).tooltip, trigger: 'item', formatter: ({ value }) =>
+        `${esc(tr('chart.gold'))}: <b>${esc(keys[value[1]])}</b><br>${esc(tr('chart.pred'))}: <b>${esc(keys[value[0]])}</b><br>${num(value[2])}` },
+      xAxis: { type: 'category', data: keys, name: tr('chart.pred'), nameLocation: 'middle', nameGap: 34,
+        nameTextStyle: { color: t.muted, fontSize: 11 }, axisTick: { show: false }, axisLine: { show: false },
+        axisLabel: { color: t.ink, interval: 0, width: cell - 4, overflow: 'truncate' } },
+      yAxis: { type: 'category', data: keys, inverse: true, axisTick: { show: false }, axisLine: { show: false },
+        axisLabel: { color: t.ink, width: left - 14, overflow: 'truncate' } },
+      visualMap: { show: false, min: 0, max, inRange: { color: [t.seqLo, t.seqHi] } },
+      // a count on a dark cell is written in the surface color, on a light one in ink (both themes)
+      series: [{ type: 'heatmap', data: matrix.flatMap((row, g) => row.map((c, p) => ({ value: [p, g, c],
+          label: { color: c / max > 0.55 ? t.surface : t.ink } }))),
+        itemStyle: { borderColor: t.surface, borderWidth: 2, borderRadius: 3 },
+        label: { show: true, fontFamily: t.mono, fontSize: 11, formatter: ({ value }) => (value[2] ? num(value[2]) : '') } }],
+    };
+  };
+}
+
+/** Calibration: accuracy against mean confidence per bin; on the diagonal the confidence can be taken at face value. */
+export function reliabilityChart({ bins }) {
+  return (t) => {
+    const maxN = Math.max(1, ...bins.map((b) => b.n));
+    return {
+      ...base(t),
+      height: 240,
+      grid: { left: 44, right: 16, top: 30, bottom: 40 },
+      legend: { top: 0, right: 0, itemWidth: 10, itemHeight: 10, textStyle: { color: t.ink2, fontSize: 12 },
+        data: [tr('chart.bins'), tr('chart.diagonal')] },
+      tooltip: { ...base(t).tooltip, trigger: 'item', formatter: ({ seriesIndex, dataIndex }) => {
+        if (seriesIndex !== 0) return '';
+        const b = bins[dataIndex];
+        return `${esc(tr('chart.meanConf'))}: <b>${pct(b.conf)}</b><br>${esc(tr('chart.accuracy'))}: <b>${pct(b.acc)}</b><br>${esc(tr('chart.count'))}: ${num(b.n)}`;
+      } },
+      xAxis: pctAxis(t, { name: tr('chart.meanConf'), nameLocation: 'middle', nameGap: 26, nameTextStyle: { color: t.muted, fontSize: 11 } }),
+      yAxis: pctAxis(t),
+      series: [
+        { name: tr('chart.bins'), type: 'scatter', data: bins.map((b) => [b.conf, b.acc]),
+          symbolSize: (_, p) => 8 + 14 * Math.sqrt(bins[p.dataIndex].n / maxN),
+          itemStyle: { color: t.accent, borderColor: t.surface, borderWidth: 2 }, z: 3 },
+        { name: tr('chart.diagonal'), type: 'line', data: [[0, 0], [1, 1]], symbol: 'none', silent: true,
+          lineStyle: { color: t.muted, width: 1, type: [4, 3] }, itemStyle: { color: t.muted } },
+      ],
+    };
+  };
+}
+
+/** Automate only answers at least this confident: the share automated and the error among them, by threshold. */
+export function coverageChart({ curve, threshold = null, thresholdLabel = '' }) {
+  return (t) => {
+    const lo = Math.max(0, Math.floor((Math.min(...curve.map((c) => c.threshold)) - 0.02) * 20) / 20);
+    return {
+      ...base(t),
+      height: 240,
+      grid: { left: 44, right: 16, top: 30, bottom: 40 },
+      legend: { top: 0, right: 0, itemWidth: 14, itemHeight: 3, textStyle: { color: t.ink2, fontSize: 12 },
+        data: [tr('chart.coverage'), tr('chart.error')] },
+      tooltip: { ...base(t).tooltip, trigger: 'axis', formatter: (ps) => {
+        const c = curve[ps[0].dataIndex];
+        return `${esc(tr('chart.atLeast', { p: pct(c.threshold) }))}<br>${esc(tr('chart.coverage'))}: <b>${pct(c.coverage)}</b><br>${esc(tr('chart.error'))}: <b>${pct(c.error)}</b>`;
+      } },
+      xAxis: { type: 'value', min: lo, max: 1, inverse: true, name: tr('chart.threshold'), nameLocation: 'middle', nameGap: 26,
+        nameTextStyle: { color: t.muted, fontSize: 11 }, axisLabel: { formatter: (v) => `${Math.round(v * 100)}%`, color: t.muted,
+          fontFamily: t.mono, fontSize: 11 }, splitLine: { show: false }, axisLine: { lineStyle: { color: t.axis } } },
+      yAxis: pctAxis(t),
+      series: [
+        { name: tr('chart.coverage'), type: 'line', step: 'end', symbol: 'none', data: curve.map((c) => [c.threshold, c.coverage]),
+          lineStyle: { color: t.accent, width: 2 }, itemStyle: { color: t.accent },
+          markLine: threshold !== null ? thresholdLine(t, threshold, thresholdLabel) : undefined },
+        { name: tr('chart.error'), type: 'line', step: 'end', symbol: 'none', data: curve.map((c) => [c.threshold, c.error]),
+          lineStyle: { color: t.second, width: 2 }, itemStyle: { color: t.second } },
+      ],
+    };
+  };
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// "Why?"
+
+/** The parts that moved the answer most: bars to the right support it, to the left argue against it. */
+export function deltaChart({ rows, kind }) {
+  return (t, width) => {
+    const m = Math.max(1e-6, ...rows.map((r) => Math.abs(r.delta)));
+    const left = Math.max(110, Math.min(300, Math.round(width * 0.45)));
+    const fmt = (d) => (kind === 'level' ? `${d >= 0 ? '+' : '−'}${num(Math.abs(d), 2)}`
+      : tr('chart.pp', { x: `${d >= 0 ? '+' : '−'}${num(Math.abs(d) * 100, 1)}` }));
+    return {
+      ...base(t),
+      height: rows.length * 30 + 34,
+      grid: { left: left + 56, right: 70, top: 6, bottom: 24 },
+      tooltip: { ...base(t).tooltip, trigger: 'item', formatter: ({ dataIndex }) => `${esc(rows[dataIndex].full)}<br><b>${fmt(rows[dataIndex].delta)}</b>` },
+      xAxis: { type: 'value', min: -m * 1.05, max: m * 1.05, splitNumber: 4, axisLabel: { show: false },
+        splitLine: { lineStyle: { color: t.line } }, axisLine: { show: false }, axisTick: { show: false } },
+      yAxis: { type: 'category', inverse: true, data: rows.map((r) => r.label), axisTick: { show: false },
+        axisLine: { show: false }, axisLabel: { color: t.ink, width: left - 14, overflow: 'truncate' } },
+      series: [{ type: 'bar', barMaxWidth: 14, barMinHeight: 2,
+        data: rows.map((r) => ({ value: r.delta, itemStyle: { color: r.delta >= 0 ? t.accent : t.neg,
+          borderRadius: r.delta >= 0 ? [0, 4, 4, 0] : [4, 0, 0, 4] }, label: { position: r.delta >= 0 ? 'right' : 'left' } })),
+        label: { show: true, color: t.ink, fontFamily: t.mono, fontSize: 11, formatter: ({ value }) => fmt(value) },
+        markLine: { symbol: 'none', silent: true, lineStyle: { color: t.axis, width: 1, type: 'solid' }, label: { show: false },
+          data: [{ xAxis: 0 }] } }],
+    };
+  };
 }
 
 export const codeOf = (i) => CODES[i] ?? '?';

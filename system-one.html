@@ -132,8 +132,9 @@
     <div class="doc-cols">
       <h2>Typy pytań</h2>
       <div class="prose">
-        <p>System One definiuje trzy typy: wybór, tak/nie i ocenę. basal dodaje trzy kolejne: etykiety, narzędzie i akcję.
-          Narzędzie i akcja są w silniku basal oznaczone jako eksperymentalne. Ta strona obsługuje wszystkie sześć.</p>
+        <p>Interfejs System One definiuje trzy typy: wybór, tak/nie i ocenę (oznaczone „System One”). Silnik basal dodaje
+          trzy kolejne: etykiety, narzędzie i akcję (oznaczone „rozszerzenie basal”). Narzędzie i akcja są w silniku basal
+          oznaczone jako eksperymentalne. Ta strona obsługuje wszystkie sześć.</p>
       </div>
     </div>
     <div class="types">
@@ -161,16 +162,17 @@
         <a class="try" href="index.html?example=0#try">Wypróbuj</a>
       </article>
       <article class="type-card">
-        <header><h3>Etykiety</h3><code>multi</code><span class="tag-basal">basal</span></header>
-        <p>Niezależne prawdopodobieństwo dla każdej etykiety i wybrany zestaw. Wybór według progu (domyślnie 50%) z limitem
-          min/max albo zestaw o najlepszym oczekiwanym IoU, F1 lub trafieniu dokładnym. Etykieta „wyłączna” może być
-          wybrana tylko sama, a etykieta zapasowa tylko wtedy, gdy nic innego nie pasuje.</p>
-        <dl><dt>Pytanie</dt><dd>„Jakie problemy porusza wiadomość?”</dd>
-          <dt>Odpowiedź</dt><dd><code>"selected": ["uszkodzenie", "zwrot"]</code></dd></dl>
+        <header><h3>Etykiety</h3><code>multi</code><span class="tag-basal">rozszerzenie basal</span></header>
+        <p>Kilka odpowiedzi naraz. Podajesz listę etykiet, a model sprawdza każdą osobno: czy pasuje do tekstu? Dostajesz
+          prawdopodobieństwo dla każdej etykiety i listę tych, które przekroczyły próg, domyślnie 50%.</p>
+        <p>Różnica względem wyboru: tam pasuje dokładnie jedna opcja, tu może pasować kilka albo żadna. Można też ustawić
+          najmniejszą i największą liczbę etykiet albo etykietę „żadne z powyższych”.</p>
+        <dl><dt>Pytanie</dt><dd>„Jakie problemy porusza wiadomość?” uszkodzenie · zwrot · dostawa</dd>
+          <dt>Odpowiedź</dt><dd>uszkodzenie i zwrot: <code>"selected": ["uszkodzenie", "zwrot"]</code></dd></dl>
         <a class="try" href="index.html?example=3#try">Wypróbuj</a>
       </article>
       <article class="type-card">
-        <header><h3>Narzędzie</h3><code>tool</code><span class="tag-basal">basal</span><span class="tag-exp">eksperymentalne</span></header>
+        <header><h3>Narzędzie</h3><code>tool</code><span class="tag-basal">rozszerzenie basal</span><span class="tag-exp">eksperymentalne</span></header>
         <p>Następne narzędzie agenta, wybrane z definicji w formacie OpenAI, MCP albo Anthropic, lub jedna z opcji
           dodatkowych: odpowiedz bezpośrednio, dopytaj użytkownika, brak odpowiedniego narzędzia. Może też zwrócić ranking
           albo zestaw narzędzi.</p>
@@ -179,7 +181,7 @@
         <a class="try" href="index.html?example=4#try">Wypróbuj</a>
       </article>
       <article class="type-card">
-        <header><h3>Akcja</h3><code>act</code><span class="tag-basal">basal</span><span class="tag-exp">eksperymentalne</span></header>
+        <header><h3>Akcja</h3><code>act</code><span class="tag-basal">rozszerzenie basal</span><span class="tag-exp">eksperymentalne</span></header>
         <p>Akcja o najniższym oczekiwanym koszcie według podanej przez Ciebie macierzy kosztów. Z <code>max_error</code>
           przekazuje decyzję człowiekowi, gdy pewność jest poniżej certyfikowanego progu.</p>
         <dl><dt>Pytanie</dt><dd>„Czy zwrot przysługuje?” zatwierdź · odrzuć · do człowieka</dd>
@@ -376,8 +378,9 @@
     <div class="doc-cols">
       <h2>Question types</h2>
       <div class="prose">
-        <p>System One defines three types: choice, yes/no and score. basal adds three more: labels, tool and action. Tool
-          and action are marked experimental in the basal engine. This page supports all six.</p>
+        <p>The System One interface defines three types: choice, yes/no and score (marked “System One”). The basal engine
+          adds three more: labels, tool and action (marked “basal extension”). Tool and action are marked experimental in the
+          basal engine. This page supports all six.</p>
       </div>
     </div>
     <div class="types">
@@ -405,16 +408,17 @@
         <a class="try" href="index.html?example=0#try">Try it</a>
       </article>
       <article class="type-card">
-        <header><h3>Labels</h3><code>multi</code><span class="tag-basal">basal</span></header>
-        <p>An independent probability for every label and the selected set. Selection by threshold (50% by default) with
-          a min/max, or the set with the best expected IoU, F1 or exact match. An “exclusive” label can only be selected
-          alone, and a fallback label only when nothing else applies.</p>
-        <dl><dt>Question</dt><dd>“Which issues does the message raise?”</dd>
-          <dt>Answer</dt><dd><code>"selected": ["damage", "refund"]</code></dd></dl>
+        <header><h3>Labels</h3><code>multi</code><span class="tag-basal">basal extension</span></header>
+        <p>Several answers at once. You give a list of labels and the model checks each one on its own: does it fit the
+          text? You get a probability for every label and the list of those above the threshold, 50% by default.</p>
+        <p>The difference from a choice: there exactly one option fits, here several can fit, or none. You can also set
+          the smallest and largest number of labels, or a “none of these” label.</p>
+        <dl><dt>Question</dt><dd>“Which issues does the message raise?” damage · refund · delivery</dd>
+          <dt>Answer</dt><dd>damage and refund: <code>"selected": ["damage", "refund"]</code></dd></dl>
         <a class="try" href="index.html?example=3#try">Try it</a>
       </article>
       <article class="type-card">
-        <header><h3>Tool</h3><code>tool</code><span class="tag-basal">basal</span><span class="tag-exp">experimental</span></header>
+        <header><h3>Tool</h3><code>tool</code><span class="tag-basal">basal extension</span><span class="tag-exp">experimental</span></header>
         <p>An agent's next tool, chosen from OpenAI, MCP or Anthropic definitions, or one of the extra options: answer
           directly, ask the user, no suitable tool. It can also return a ranking or a set of tools.</p>
         <dl><dt>Question</dt><dd>“What should the assistant do next?”</dd>
@@ -422,7 +426,7 @@
         <a class="try" href="index.html?example=4#try">Try it</a>
       </article>
       <article class="type-card">
-        <header><h3>Action</h3><code>act</code><span class="tag-basal">basal</span><span class="tag-exp">experimental</span></header>
+        <header><h3>Action</h3><code>act</code><span class="tag-basal">basal extension</span><span class="tag-exp">experimental</span></header>
         <p>The action with the lowest expected cost under the cost matrix you give. With <code>max_error</code> it hands
           the decision to a person when the confidence is below the certified threshold.</p>
         <dl><dt>Question</dt><dd>“Is a refund due?” approve · reject · to a person</dd>

@@ -20,13 +20,16 @@ answers ◄── calibration + typed answers ◄──── answer position �
 | `src/builder.js` | the question form (choice, yes/no, score, labels), kept in sync with the request JSON; `tool` and `act` stay in the JSON tab |
 | `src/charts.js` | the answer charts, drawn with Apache ECharts |
 | `src/i18n.js` | the page's English and Polish texts |
+| `src/batch-ui.js`, `src/table.js`, `src/stats.js`, `src/store.js` | many rows: reading CSV / TSV / JSONL / XLSX, the run (pause, resume, stop, saved in IndexedDB), grading against a column of correct answers, export |
+| `src/explain.js` | "Why?": each sentence or field of the state left out in turn, and the change of the answer |
+| `examples/zgloszenia.csv` | the sample file: 24 made-up Polish support tickets with their correct category |
 | `src/presets.js`, `src/example-result.json` | the examples, and one real run of the first one (shown before the model is loaded) |
 | `src/basal.js` | port of the basal engine's prompt format 2: request → prompts, readout → calibrated typed answers (`choice`, `noul`, `score`, `multi`, `tool`, `act`) |
 | `src/sets.js` | `multi` set selection (threshold, exact, expected IoU / F1), port of `basal/sets.py` |
 | `src/ojson.js` | JSON with Python semantics: key order kept (JS objects reorder keys like `"10"`, `"2"`), `1.0` ≠ `1`, `json.dumps` formatting |
 | `src/engine.js` | the readout on wllama |
 | `calibration/CALIBRATION.llamacpp.json` | temperatures and certified thresholds for llama.cpp readouts (from the model repo) |
-| `vendor/`, `coi-serviceworker.js` | vendored wllama, ECharts and the two fonts (`npm run vendor` refreshes them from `node_modules`) |
+| `vendor/`, `coi-serviceworker.js` | vendored wllama, ECharts, the XLSX reader and writer and the two fonts (`npm run vendor` refreshes them from `node_modules`) |
 | `test/` | Node tests; the engine's format-2 test vectors and bundled examples; reference answers from basal-serve |
 | `dev/validate.html`, `tools/` | browser validation page, dev server, reference and comparison scripts |
 
@@ -46,6 +49,19 @@ The model and calibration are pinned to revision `594d115` of `Remek/basal-2.0-m
   the temperature), its exact prompts (with the text shared with the previous prompt highlighted) and its JSON.
 - **Pipeline.** The seven steps from request to answer, annotated with the figures of the last run.
 - **Before the model is loaded** the page shows a saved real run of the first example, labelled as such.
+- **"Why?"** on every answer: each sentence of the state (each field of a structured state, sentence by sentence)
+  is left out in turn and the question asked again. The state is shown tinted blue where a part supports the answer
+  and red where it argues against it, with a chart of the largest effects. Parts are evaluated from the last to the
+  first, so every prompt shares all text before the removed part with the previous one and llama.cpp reuses it; a
+  five-sentence ticket takes about 15 s. It shows what moves this model's answer, not a proven cause.
+- **Many rows** (`#batch`): a CSV, TSV, JSONL or XLSX file, the column(s) that make the state and, optionally, a
+  column of correct answers per question. The run shows an estimate first, can be paused, resumed or stopped, keeps
+  the screen awake and saves every finished row in IndexedDB, so a reload offers to continue. Results: totals,
+  per-question answer counts and confidence histogram, and with correct answers the accuracy, a confusion matrix, a
+  calibration chart and the share automated / error at each confidence threshold; a paged table whose rows open
+  their full answer cards; export as CSV (UTF-8 with BOM), XLSX or JSONL. On the sample file (24 tickets, the three
+  ticket questions): 4.8 s per row, category correct on 22 of 24.
+- **Stop** interrupts a running request, and Ctrl+Enter runs one.
 - **System One page** (`system-one.html`): what the interface is, the six question types with an example each and a
   link that opens it in the workbench, typical uses, the certified confidence thresholds, good practice, and what this
   browser port supports.
@@ -80,7 +96,7 @@ The built-in `createSystemOne()` of wllama 3.8 is not usable: it needs llama.cpp
 
 ## Validation
 
-`npm test` (Node 22, no dependencies; 360 tests):
+`npm test` (Node 22, no dependencies; 370 tests):
 
 - **Prompts**: all 43 requests / 74 prompts of the engine's `docs/format2_vectors.jsonl` are rendered byte for byte,
   including Polish, structured states, 255 options, two option orders, `multi`, `tool` and `act`.
@@ -129,8 +145,10 @@ So a decision costs seconds, not milliseconds: about 5–6 s for a question over
 1,200-token prompt, 2 minutes at the 4,000-token end. Questions after the first over the same state compute only their
 own tokens (the state's KV cache is reused), typically 1–2 s each. Loading the cached model takes about 2 s.
 
-WebGPU (wllama 3.1+) was slower in a quick test (105 tokens: 9.6 s against 3.6 s on 10 CPU threads) and did not
-finish a 2,600-token prompt in 6 minutes, so it is off (`gpuLayers: 0`).
+WebGPU (wllama 3.1+) is slower than the CPU here, so it is off (`gpuLayers: 0`). Measured with the page visible on an
+NVIDIA RTX 5060 Ti: a 223-token prompt at 22 tokens/s (CPU, 16 threads: 40), and a 1,197-token prompt not finished
+after 2.5 minutes (CPU: 31 s). wllama's WebGPU path does not yet have fast kernels for this quantisation and prompt
+processing.
 
 ## Run locally
 
@@ -171,4 +189,4 @@ repository root and send the same headers for real (the service worker then sees
 Third-party parts: model, calibration, test vectors and examples are Apache-2.0, basal by Remigiusz Kinas (fine-tuned
 from speakleash/Bielik-1.5B-v3.0-Instruct; `test/data/LICENSE.basal`); wllama MIT (`vendor/wllama/LICENCE`); Apache
 ECharts 6.1.0, Apache-2.0 (`vendor/echarts/LICENSE`, `NOTICE`); Schibsted Grotesk and JetBrains Mono, SIL Open Font
-License 1.1 (`vendor/fonts/*.LICENSE`); coi-serviceworker MIT. No license has been chosen yet for the code of this repository.
+License 1.1 (`vendor/fonts/*.LICENSE`); read-excel-file and write-excel-file MIT (`vendor/xlsx/`); coi-serviceworker MIT. No license has been chosen yet for the code of this repository.

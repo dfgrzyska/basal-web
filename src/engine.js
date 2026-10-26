@@ -89,9 +89,11 @@ export class BasalEngine {
   }
 
   // One prompt -> the raw log-probabilities of the first k option codes (-1e9 for a code outside the top list).
-  async codeLogprobs(prompt, k, { cache = true } = {}) {
+  // signal: an AbortSignal; aborting stops the prompt and throws an error named 'AbortError'.
+  async codeLogprobs(prompt, k, { cache = true, signal } = {}) {
     const text = prompt.startsWith(BOS) ? prompt.slice(BOS.length) : prompt;
     const t0 = performance.now();
+    if (signal?.aborted) throw abortError();
     const res = await this.wllama.createCompletion({
       prompt: text,
       max_tokens: 1,
@@ -100,6 +102,7 @@ export class BasalEngine {
       logprobs: Math.max(TOP, k + 10),
       post_sampling_probs: false,
       cache_prompt: cache,
+      ...(signal ? { abortSignal: signal } : {}),
     });
     const got = topLogprobs(res);
     for (let i = 0; i < k; i++) {
@@ -121,15 +124,31 @@ export class BasalEngine {
   }
 
   // The readout of basal.decide(): softmax over the code log-probabilities of every prompt.
-  readout = async (prompts) => {
+  readout = async (prompts, { signal } = {}) => {
     const out = [];
-    for (const { prompt, k } of prompts) out.push(softmax(await this.codeLogprobs(prompt, k)));
+    for (const { prompt, k } of prompts) out.push(softmax(await this.codeLogprobs(prompt, k, { signal })));
     return out;
   };
+
+  // Prompt tokens computed per second over the readouts so far (0 before the first long enough prompt).
+  tokensPerSecond() {
+    const runs = this.log.filter((l) => l.evaluated > 40 && l.promptMs > 0);
+    const tokens = runs.reduce((s, l) => s + l.evaluated, 0);
+    const ms = runs.reduce((s, l) => s + l.promptMs, 0);
+    return ms ? (1000 * tokens) / ms : 0;
+  }
 
   async unload() {
     await this.wllama.exit();
   }
+}
+
+export const isAbort = (e) => e?.name === 'AbortError';
+
+function abortError() {
+  const e = new Error('aborted');
+  e.name = 'AbortError';
+  return e;
 }
 
 export function softmax(z) {

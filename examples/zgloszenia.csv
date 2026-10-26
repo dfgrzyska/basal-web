@@ -1,0 +1,25 @@
+id,tresc,kategoria
+1,"Zamówiony odkurzacz przestał działać po dwóch dniach. Silnik buczy, ale szczotka się nie kręci. Proszę o naprawę albo wymianę.",complaint
+2,Kurtka po pierwszym praniu w 30 stopniach zafarbowała resztę prania i się skurczyła. Chcę zwrotu pieniędzy.,complaint
+3,"W zestawie garnków brakuje jednej pokrywki, a druga ma wgniecenie. Karton był cały.",complaint
+4,Słuchawki od początku trzeszczą w lewym uchu. Reset do ustawień fabrycznych nic nie dał.,complaint
+5,"Ekspres cieknie od spodu przy każdym parzeniu kawy. Używam go od tygodnia, zgodnie z instrukcją.",complaint
+6,Krzesło biurowe: po miesiącu pękł mechanizm podnoszenia i siedzisko samo opada.,complaint
+7,"Telefon nie ładuje się dołączoną ładowarką, inna działa bez problemu. Proszę o nową ładowarkę.",complaint
+8,Buty rozkleiły się na podeszwie po trzech tygodniach zwykłego chodzenia.,complaint
+9,"Zamówienie 55120 miało przyjść we wtorek, a od pięciu dni status to „w drodze”. Kiedy dotrze?",delivery
+10,"Minęły dwa tygodnie od zamówienia, a paczka nadal nie została nadana. Proszę o informację.",delivery
+11,Śledzenie przesyłki nie zmienia się od czwartku. Potrzebuję tego prezentu na sobotę.,delivery
+12,"Termin dostawy przesunięto już trzeci raz. Czy mogę anulować zamówienie, jeśli nie przyjdzie do piątku?",delivery
+13,"Zapłaciłem za dostawę ekspresową 24h, a czekam już czwarty dzień.",delivery
+14,"Kurier miał być wczoraj między 10 a 14, nikt nie przyjechał i nie dostałem żadnej wiadomości.",delivery
+15,"Na fakturze jest zły NIP firmy. Proszę o korektę, poprawny numer podaję w odpowiedzi.",invoice
+16,"Nie dostałam faktury do zamówienia 77341, a potrzebuję jej do rozliczenia miesiąca.",invoice
+17,"Faktura jest na 1240 zł, a po rabacie zapłaciłem 1190 zł. Proszę o wyjaśnienie różnicy.",invoice
+18,Proszę o wystawienie faktury na firmę zamiast paragonu. Dane firmy wyślę mailem.,invoice
+19,Na fakturze brakuje pozycji za dostawę i księgowość jej nie przyjmie.,invoice
+20,"Nie mogę zalogować się na konto, link do resetu hasła w ogóle nie przychodzi.",other
+21,Czy macie ten model lodówki w kolorze białym? Na stronie widzę tylko wersję inox.,other
+22,Proszę o usunięcie mojego adresu z newslettera.,other
+23,Jakie są godziny otwarcia sklepu stacjonarnego w Poznaniu w niedziele handlowe?,other
+24,"Chciałbym zmienić adres dostawy w zamówieniu, które jeszcze nie zostało wysłane.",other

@@ -14,6 +14,12 @@ const copies = [
   ['echarts/LICENSE', 'vendor/echarts/LICENSE'],
   ['echarts/NOTICE', 'vendor/echarts/NOTICE'],
   ['coi-serviceworker/coi-serviceworker.min.js', 'coi-serviceworker.js'],
+  // XLSX for the many-rows section, loaded only when a spreadsheet is read or written (globals readXlsxFile,
+  // writeXlsxFile)
+  ['read-excel-file/bundle/read-excel-file.min.js', 'vendor/xlsx/read-excel-file.min.js'],
+  ['read-excel-file/LICENSE', 'vendor/xlsx/read-excel-file.LICENSE'],
+  ['write-excel-file/bundle/write-excel-file.min.js', 'vendor/xlsx/write-excel-file.min.js'],
+  ['write-excel-file/LICENSE', 'vendor/xlsx/write-excel-file.LICENSE'],
 ];
 for (const font of ['schibsted-grotesk', 'jetbrains-mono']) {
   for (const subset of ['latin', 'latin-ext']) {
@@ -28,4 +34,4 @@ for (const [from, to] of copies) {
 }
 const version = (p) => JSON.parse(readFileSync(nm(`${p}/package.json`))).version;
 console.log(['@wllama/wllama', 'echarts', 'coi-serviceworker', '@fontsource-variable/schibsted-grotesk',
-  '@fontsource-variable/jetbrains-mono'].map((p) => `${p} ${version(p)}`).join(', '));
+  '@fontsource-variable/jetbrains-mono', 'read-excel-file', 'write-excel-file'].map((p) => `${p} ${version(p)}`).join(', '));

@@ -20,6 +20,7 @@
     <div class="topbar-right">
       <nav data-i18n-attr="aria-label:nav.site">
         <a href="#how" data-i18n="nav.how">How it works</a>
+        <a href="#batch" data-i18n="nav.batch">Many rows</a>
         <a href="system-one.html" class="nav-keep" data-i18n="nav.systemone">System One</a>
         <a href="https://huggingface.co/Remek/basal-2.0-mini-GGUF" rel="noopener" data-i18n="nav.model">Model</a>
         <a href="https://github.com/rkinas/basal" rel="noopener" data-i18n="nav.engine">Engine</a>
@@ -80,7 +81,8 @@
           <p class="json-note" id="json-note"></p>
         </div>
         <div class="run-bar">
-          <button id="run" class="btn btn-primary" type="button" disabled data-i18n="run.button">Decide</button>
+          <button id="run" class="btn btn-primary" type="button" disabled data-i18n="run.button" data-i18n-attr="title:run.title">Decide</button>
+          <button id="stop" class="btn btn-ghost" type="button" hidden data-i18n="run.stop">Stop</button>
           <p id="run-status" class="run-status" role="status" data-i18n="run.needModel">Load the model to run your own questions.</p>
         </div>
       </div>
@@ -89,6 +91,20 @@
         <div id="answers" aria-live="polite"></div>
       </div>
     </div>
+  </section>
+
+  <section class="batch wrap" id="batch" aria-labelledby="batch-title">
+    <div class="bench-head">
+      <h2 id="batch-title" data-i18n="batch.title">Many rows</h2>
+    </div>
+    <p class="batch-intro" data-i18n="batch.intro">The questions of the workbench above, asked about every row of a file.</p>
+    <div class="batch-box">
+      <div id="bt-saved" class="bt-saved" hidden></div>
+      <div class="bt-step"><h3><span class="step">1</span><span data-i18n="batch.step1">File</span></h3><div id="bt-file"></div></div>
+      <div class="bt-step" id="bt-map" hidden></div>
+      <div class="bt-step" id="bt-run" hidden></div>
+    </div>
+    <div id="bt-results" class="bt-results" hidden></div>
   </section>
 
   <section class="how wrap" id="how" aria-labelledby="how-title">
