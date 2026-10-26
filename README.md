@@ -16,6 +16,7 @@ answers ◄── calibration + typed answers ◄──── answer position �
 | path | what |
 |---|---|
 | `index.html`, `src/app.js`, `src/app.css` | the page |
+| `system-one.html`, `src/doc.js` | the System One page: what the interface is, the six question types, what they are for (Polish and English text; its "Try it" links open `index.html?example=N#try`) |
 | `src/builder.js` | the question form (choice, yes/no, score, labels), kept in sync with the request JSON; `tool` and `act` stay in the JSON tab |
 | `src/charts.js` | the answer charts, drawn with Apache ECharts |
 | `src/i18n.js` | the page's English and Polish texts |
@@ -45,6 +46,9 @@ The model and calibration are pinned to revision `594d115` of `Remek/basal-2.0-m
   the temperature), its exact prompts (with the text shared with the previous prompt highlighted) and its JSON.
 - **Pipeline.** The seven steps from request to answer, annotated with the figures of the last run.
 - **Before the model is loaded** the page shows a saved real run of the first example, labelled as such.
+- **System One page** (`system-one.html`): what the interface is, the six question types with an example each and a
+  link that opens it in the workbench, typical uses, the certified confidence thresholds, good practice, and what this
+  browser port supports.
 
 Fonts are self-hosted, so the page makes no requests other than for the model and its own files.
 

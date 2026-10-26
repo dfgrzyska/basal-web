@@ -487,8 +487,13 @@ addEventListener('langchange', () => {
 
 apply();
 langButtons();
+// ?example=N opens that example in the workbench (the links of system-one.html)
+const linked = Number(new URLSearchParams(location.search).get('example'));
+activeExample = Number.isInteger(linked) && PRESETS[linked] ? linked : 0;
 renderChips();
-setRequest(fromPlain(PRESETS[0].request));
+setRequest(fromPlain(PRESETS[activeExample].request));
+// the browser jumps to #try before the form exists; jump again once it is drawn
+if (/^#[\w-]+$/.test(location.hash)) requestAnimationFrame(() => document.querySelector(location.hash)?.scrollIntoView());
 loadButton();
 envFacts();
 showExample();
