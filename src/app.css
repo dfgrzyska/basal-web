@@ -490,6 +490,13 @@ pre.prompt mark { background: var(--accent-wash); color: inherit; border-radius:
 .uses p { margin: 0; color: var(--ink-2); font-size: 14px; }
 .uses span { font-size: 12.5px; color: var(--muted); }
 .doc-table { width: auto; min-width: min(100%, 360px); margin: 6px 0 14px; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 18px 32px; margin-top: 20px; }
+.fields h3 { font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.fields dl, .gloss { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 7px 16px; margin: 0; font-size: 14px; }
+.fields dt code { white-space: nowrap; }
+.fields dd, .gloss dd { margin: 0; color: var(--ink-2); }
+.gloss { max-width: 46em; }
+.gloss dt { font-weight: 650; }
 .topbar nav a[aria-current="page"] { color: var(--ink); }
 
 @media (max-width: 900px) {

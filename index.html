@@ -57,9 +57,7 @@
       </div>
       <pre class="readout-prompt" id="readout-prompt" data-i18n-attr="aria-label:readout.promptAria"></pre>
       <div class="readout-chart" id="readout-chart"></div>
-      <figcaption id="readout-cap" data-i18n-html="readout.caption">The model’s next token after
-        <code>{"answer": "</code>, counted over the option codes only. That distribution is the decision; a calibration
-        step then sets how sure it is.</figcaption>
+      <figcaption id="readout-cap" data-i18n-html="readout.caption">The model continues the text <code>{"answer": "</code> with one option letter. The bars show how likely each letter is: that is the decision. A calibration step then corrects the numbers so the confidence can be trusted.</figcaption>
     </figure>
   </section>
 
@@ -110,32 +108,23 @@
   <section class="how wrap" id="how" aria-labelledby="how-title">
     <div class="how-intro">
       <h2 id="how-title" data-i18n="how.title">How a decision is made</h2>
-      <p data-i18n="how.intro">basal is trained to answer by writing one option code. The page builds the same prompt the
-        basal engine builds, reads that one token’s probabilities, and calibrates them. The figures below come from the
-        last run.</p>
+      <p data-i18n="how.intro">basal is trained to answer with a single letter: the letter of the option it picks. The page writes the same prompt the basal engine writes, reads how likely each letter is, and corrects those numbers. The figures below come from the last run.</p>
     </div>
     <ol class="pipeline" id="pipeline">
-      <li><h3 data-i18n="s1.h">Request</h3><p data-i18n="s1.p">A state and named questions.</p><span class="fig" data-fig="request"></span></li>
-      <li><h3 data-i18n="s2.h">Prompt</h3><p data-i18n-html="s2.p">One per question: the state, the question, the options as
-        <code>A.</code> <code>B.</code> <code>C.</code>, ending in <code>{"answer": "</code></p><span class="fig" data-fig="prompts"></span></li>
-      <li><h3 data-i18n="s3.h">Forward pass</h3><p data-i18n="s3.p">llama.cpp in WebAssembly reads it on your CPU. A later
-        question reuses the state it has already read.</p><span class="fig" data-fig="engine"></span></li>
-      <li><h3 data-i18n="s4.h">Next token</h3><p data-i18n="s4.p">The most likely next tokens, by token id.</p><span class="fig" data-fig="top"></span></li>
-      <li><h3 data-i18n="s5.h">Codes only</h3><p data-i18n="s5.p">A softmax over the option codes turns them into one
-        probability per option.</p><span class="fig" data-fig="codes"></span></li>
-      <li><h3 data-i18n="s6.h">Calibration</h3><p data-i18n="s6.p">A temperature for each question type and option count,
-        fitted on held-out data.</p><span class="fig" data-fig="temp"></span></li>
-      <li><h3 data-i18n="s7.h">Answer</h3><p data-i18n="s7.p">The typed answer, with a confidence you can set a threshold
-        on.</p><span class="fig" data-fig="answers"></span></li>
+      <li><h3 data-i18n="s1.h">Request</h3><p data-i18n="s1.p">The text you ask about (the state) and your questions.</p><span class="fig" data-fig="request"></span></li>
+      <li><h3 data-i18n="s2.h">Prompt</h3><p data-i18n-html="s2.p">For each question one text for the model: the state, the question and the options as <code>A.</code> <code>B.</code> <code>C.</code>, ending in <code>{"answer": "</code></p><span class="fig" data-fig="prompts"></span></li>
+      <li><h3 data-i18n="s3.h">Reading</h3><p data-i18n="s3.p">The model reads the prompt on your computer’s processor (llama.cpp compiled to WebAssembly). Later questions reuse what it has already read.</p><span class="fig" data-fig="engine"></span></li>
+      <li><h3 data-i18n="s4.h">Next token</h3><p data-i18n="s4.p">The model rates every possible next piece of text (token) and gives each a probability.</p><span class="fig" data-fig="top"></span></li>
+      <li><h3 data-i18n="s5.h">Only the letters</h3><p data-i18n="s5.p">Only the option letters count; their probabilities are scaled to add up to 100%.</p><span class="fig" data-fig="codes"></span></li>
+      <li><h3 data-i18n="s6.h">Calibration</h3><p data-i18n="s6.p">A correction fitted on questions the model never saw, so that 90% means right about 9 times in 10.</p><span class="fig" data-fig="temp"></span></li>
+      <li><h3 data-i18n="s7.h">Answer</h3><p data-i18n="s7.p">The answer in the form of its question type, with a confidence you can set a threshold on.</p><span class="fig" data-fig="answers"></span></li>
     </ol>
     <div class="notes">
       <div><h3 data-i18n="n1.h">Private by design</h3><p data-i18n="n1.p">The weights come to you, your text doesn’t go
         anywhere. There is no server behind this page.</p></div>
       <div><h3 data-i18n="n2.h">The state is read once</h3><p data-i18n="n2.p">Questions over the same text share its
         computation, so the second and third questions cost a second or two each.</p></div>
-      <div><h3 data-i18n="n3.h">It knows when to pass</h3><p data-i18n-html="n3.p">Give an action question a
-        <code>max_error</code> and it defers to a person when its calibrated confidence is below the certified
-        threshold.</p></div>
+      <div><h3 data-i18n="n3.h">It knows when to pass</h3><p data-i18n-html="n3.p">Set an acceptable error on an Action question (<code>max_error</code>) and it hands the case to a person when it isn’t sure enough.</p></div>
     </div>
   </section>
 </main>

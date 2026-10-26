@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>System One · basal</title>
-<meta name="description" content="System One: typed decisions instead of generated text. What it is, the six question types basal supports and what they are for.">
+<meta name="description" content="System One explained in plain words: decisions instead of generated text, the six question types, what they are for, confidence and thresholds, and a glossary.">
 <script>window.coi = { coepCredentialless: () => true, quiet: true };</script>
 <script src="coi-serviceworker.js"></script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%2310151c'/%3E%3Ctext x='16' y='22.5' font-family='ui-monospace,Menlo,Consolas,monospace' font-size='18' font-weight='700' fill='%23ffffff' text-anchor='middle'%3EA%3C/text%3E%3C/svg%3E">
@@ -33,20 +33,20 @@
 <!-- ============================================================================================================ PL -->
 <main class="doc" data-doc="pl" lang="pl">
   <section class="doc-hero wrap">
-    <p class="eyebrow">System One · interfejs decyzji</p>
+    <p class="eyebrow">System One · decyzje zamiast tekstu</p>
     <h1>Pytasz o&nbsp;tekst. Dostajesz decyzję z&nbsp;prawdopodobieństwem.</h1>
-    <p class="lede">System One to sposób zadawania modelowi pytań, na które odpowiedź jest z góry określona: wybór z listy,
-      tak albo nie, ocena na skali. Model nie pisze odpowiedzi. Czyta tekst, liczy prawdopodobieństwo każdej dozwolonej
-      odpowiedzi i zwraca je w jednym kroku. Odpowiedź nie wyjdzie poza opcje, które podałeś, a prawdopodobieństwo mówi,
-      jak bardzo model jest pewny.</p>
+    <p class="lede">Zwykły czat pisze odpowiedź własnymi słowami. System One działa inaczej: z góry podajesz, jakie
+      odpowiedzi są dozwolone, na przykład trzy kategorie zgłoszeń albo „tak” i „nie”, a model wybiera spośród nich i mówi,
+      na ile jest pewny. Nie wymyśli odpowiedzi spoza listy, a pewność w procentach pomaga zdecydować, kiedy zaufać mu od
+      razu, a kiedy dać sprawę człowiekowi.</p>
     <div class="doc-cta">
       <a class="btn btn-primary" href="index.html#try">Wypróbuj w przeglądarce</a>
       <a class="btn btn-ghost" href="#typy">Typy pytań</a>
     </div>
     <nav class="toc" aria-label="Na tej stronie">
-      <a href="#nazwa">Skąd nazwa</a><a href="#zapytanie">Zapytanie i odpowiedź</a><a href="#typy">Typy pytań</a>
+      <a href="#nazwa">Skąd nazwa</a><a href="#zapytanie">Jak wygląda pytanie</a><a href="#typy">Typy pytań</a>
       <a href="#zastosowania">Zastosowania</a><a href="#pewnosc">Pewność i próg</a><a href="#praktyki">Dobre praktyki</a>
-      <a href="#tutaj">W tej przeglądarce</a>
+      <a href="#tutaj">W tej przeglądarce</a><a href="#slowniczek">Słowniczek</a>
     </nav>
   </section>
 
@@ -54,17 +54,17 @@
     <div class="doc-cols">
       <h2>Skąd nazwa</h2>
       <div class="prose">
-        <p>Nazwa nawiązuje do „Systemu 1” z psychologii poznawczej: szybkiego, intuicyjnego myślenia, które rozpoznaje
-          sytuację i od razu wybiera reakcję, bez rozpisywania rozumowania. Model działa podobnie: jedno przejście przez
-          tekst i jedna decyzja, zamiast długiej odpowiedzi pisanej słowo po słowie.</p>
-        <p>System One to też nazwa samego interfejsu: zapytanie <code>POST /v1/systemone</code> ze stanem i pytaniami,
-          odpowiedź z prawdopodobieństwami. Silnik basal go implementuje, a ta strona robi to samo w przeglądarce. Nazwa
-          basal pochodzi od jąder podstawy (<i>basal ganglia</i>), części mózgu, która wybiera jedno działanie spośród
-          konkurujących.</p>
+        <p>Nazwa nawiązuje do „Systemu 1” z psychologii (Daniel Kahneman, „Pułapki myślenia”): szybkiego, intuicyjnego
+          myślenia, które od razu rozpoznaje sytuację i wybiera reakcję. Model działa podobnie. Czyta tekst raz i od razu
+          wskazuje odpowiedź, zamiast pisać długi wywód słowo po słowie. Dzięki temu jest szybki i przewidywalny.</p>
+        <p>System One to też nazwa formatu, w jakim programy wysyłają takie pytania i odbierają odpowiedzi (opisany niżej).
+          Silnik basal ten format obsługuje, a ta strona robi to samo w Twojej przeglądarce. Samo słowo basal pochodzi od
+          jąder podstawy mózgu (<i>basal ganglia</i>), które wybierają jedno działanie spośród kilku możliwych.</p>
         <div class="callout">
-          <b>Dynamiczny klasyfikator.</b> Klasy opisujesz w zapytaniu, zwykłym językiem, przy każdym wywołaniu, zamiast
-          trenować klasyfikator. Ten sam model dziś kieruje zgłoszenia, jutro sprawdza termin w piśmie, a za tydzień
-          ocenia pilność incydentu, za każdym razem z nowymi opcjami i bez trenowania.
+          <b>Bez trenowania.</b> Żeby komputer przypisywał teksty do kategorii, zwykle trzeba zebrać tysiące przykładów i
+          wytrenować osobny model, tak zwany klasyfikator. Tutaj kategorie opisujesz zwykłymi słowami w samym pytaniu. Ten
+          sam model może dziś przydzielać zgłoszenia do działów, jutro sprawdzać terminy w pismach, a za tydzień oceniać
+          pilność awarii, za każdym razem z nowymi opcjami.
         </div>
       </div>
     </div>
@@ -72,16 +72,22 @@
 
   <section class="doc-section wrap" id="zapytanie">
     <div class="doc-cols">
-      <h2>Zapytanie i odpowiedź</h2>
+      <h2>Jak wygląda pytanie</h2>
       <div class="prose">
-        <p>Zapytanie ma dwie części. <b>Stan</b> to tekst albo JSON: wiadomość, dokument, rekord, wynik wyszukiwania, ślad
-          działania agenta. <b>Pytania</b> nazywasz sam; każde ma typ, treść i dozwolone odpowiedzi. Kilka pytań o ten sam
-          stan liczy się razem, a stan czytany jest raz.</p>
+        <p>Pytanie do modelu ma dwie części:</p>
+        <ul class="tips">
+          <li><b>Stan</b>: tekst, o który pytasz, na przykład treść zgłoszenia, e-mail albo fragment umowy. Może też być
+            zestawem pól, na przykład treść wiadomości i dane klienta.</li>
+          <li><b>Pytania</b>: jedno lub kilka. Każde ma nazwę, typ, treść i listę dozwolonych odpowiedzi. Kilka pytań o ten
+            sam stan liczy się razem, a stan model czyta tylko raz.</li>
+        </ul>
+        <p>Programy wysyłają to w formacie JSON, jak w przykładzie poniżej. Na tej stronie nie musisz pisać JSON-a: to samo
+          ustawisz w formularzu.</p>
       </div>
     </div>
     <div class="code-pair">
       <figure>
-        <figcaption>Zapytanie</figcaption>
+        <figcaption>Pytanie</figcaption>
 <pre><code>{
   "state": "Klient: zamówiłem czajnik 12.05, przyszedł
             z pękniętą obudową. Proszę o wymianę.",
@@ -126,39 +132,62 @@
 }</code></pre>
       </figure>
     </div>
+    <div class="fields">
+      <div>
+        <h3>Co jest w pytaniu</h3>
+        <dl>
+          <dt><code>state</code></dt><dd>stan, czyli tekst, o który pytasz</dd>
+          <dt><code>questions</code></dt><dd>pytania; <code>kategoria</code> i <code>zdjecie</code> to nazwy nadane przez Ciebie</dd>
+          <dt><code>type</code></dt><dd>typ pytania (opisane niżej): <code>choice</code> to wybór, <code>noul</code> to tak/nie</dd>
+          <dt><code>instructions</code></dt><dd>treść pytania</dd>
+          <dt><code>criteria</code></dt><dd>dozwolone odpowiedzi: po lewej krótki klucz, po prawej opis, który czyta model</dd>
+        </dl>
+      </div>
+      <div>
+        <h3>Co jest w odpowiedzi</h3>
+        <dl>
+          <dt><code>choice</code></dt><dd>wybrana opcja, podana kluczem</dd>
+          <dt><code>probabilities</code></dt><dd>prawdopodobieństwo każdej opcji; razem dają 1, czyli 100%</dd>
+          <dt><code>confidence</code></dt><dd>pewność: prawdopodobieństwo wybranej odpowiedzi (0,95 to 95%)</dd>
+          <dt><code>noul</code></dt><dd>prawdopodobieństwo odpowiedzi „tak” (0,77 to 77%)</dd>
+        </dl>
+      </div>
+    </div>
   </section>
 
   <section class="doc-section wrap" id="typy">
     <div class="doc-cols">
       <h2>Typy pytań</h2>
       <div class="prose">
-        <p>Interfejs System One definiuje trzy typy: wybór, tak/nie i ocenę (oznaczone „System One”). Silnik basal dodaje
-          trzy kolejne: etykiety, narzędzie i akcję (oznaczone „rozszerzenie basal”). Narzędzie i akcja są w silniku basal
-          oznaczone jako eksperymentalne. Ta strona obsługuje wszystkie sześć.</p>
+        <p>Typ pytania mówi, jakiej odpowiedzi oczekujesz. Trzy podstawowe typy pochodzą z formatu System One (oznaczone
+          „System One”), trzy kolejne dodaje silnik basal (oznaczone „rozszerzenie basal”). Dwa z nich twórcy basal oznaczyli
+          jako eksperymentalne: działają, ale ich jakość nie jest jeszcze na tyle sprawdzona, by polegać na nich bez
+          nadzoru człowieka. Ta strona obsługuje wszystkie sześć.</p>
       </div>
     </div>
     <div class="types">
       <article class="type-card">
         <header><h3>Wybór</h3><code>choice</code><span class="tag-so">System One</span></header>
-        <p>Jedna odpowiedź z listy, od 2 do 255 opcji. Dostajesz prawdopodobieństwo każdej opcji, najbardziej
-          prawdopodobną opcję i jej pewność.</p>
-        <dl><dt>Pytanie</dt><dd>„Do którego działu skierować zgłoszenie?”</dd>
-          <dt>Odpowiedź</dt><dd><code>"choice": "wsparcie", "confidence": 0.96</code></dd></dl>
+        <p>Dokładnie jedna odpowiedź z listy, od 2 do 255 opcji. Model podaje prawdopodobieństwo każdej opcji i wskazuje
+          najbardziej prawdopodobną.</p>
+        <dl><dt>Pytanie</dt><dd>„Do którego działu skierować zgłoszenie?” sprzedaż · wsparcie · reklamacje</dd>
+          <dt>Odpowiedź</dt><dd>wsparcie, z pewnością 96%: <code>"choice": "wsparcie"</code></dd></dl>
         <a class="try" href="index.html?example=2#try">Wypróbuj</a>
       </article>
       <article class="type-card">
         <header><h3>Tak / nie</h3><code>noul</code><span class="tag-so">System One</span></header>
-        <p>Prawdopodobieństwo odpowiedzi „tak”. Można opisać, co w danym pytaniu znaczy tak, a co nie.</p>
+        <p>Pytanie zamknięte. Odpowiedź to jedna liczba: prawdopodobieństwo „tak”. Możesz dopisać, co w tym pytaniu znaczy
+          „tak”, a co „nie”, na przykład „Tak, poprosić o zdjęcie”.</p>
         <dl><dt>Pytanie</dt><dd>„Czy odwołanie złożono w terminie?”</dd>
-          <dt>Odpowiedź</dt><dd><code>"noul": 0.93</code></dd></dl>
+          <dt>Odpowiedź</dt><dd>tak, na 93%: <code>"noul": 0.93</code></dd></dl>
         <a class="try" href="index.html?example=1#try">Wypróbuj</a>
       </article>
       <article class="type-card">
         <header><h3>Ocena</h3><code>score</code><span class="tag-so">System One</span></header>
-        <p>Rozkład po uporządkowanych poziomach, od najniższego, i oczekiwany poziom: 0 to pierwszy, 1,5 to pół drogi
-          między drugim a trzecim.</p>
-        <dl><dt>Pytanie</dt><dd>„Jak pilne jest zgłoszenie?” niska · średnia · wysoka · krytyczna</dd>
-          <dt>Odpowiedź</dt><dd><code>"score": 2.6</code></dd></dl>
+        <p>Ocena na skali, którą sam podajesz, od najniższego stopnia. Model podaje prawdopodobieństwo każdego stopnia i
+          wynik: średni stopień, ważony tymi prawdopodobieństwami. Stopnie liczy się od zera.</p>
+        <dl><dt>Pytanie</dt><dd>„Jak pilne jest zgłoszenie?” niska (0) · średnia (1) · wysoka (2) · krytyczna (3)</dd>
+          <dt>Odpowiedź</dt><dd>2,6, czyli między „wysoka” a „krytyczna”, bliżej krytycznej: <code>"score": 2.6</code></dd></dl>
         <a class="try" href="index.html?example=0#try">Wypróbuj</a>
       </article>
       <article class="type-card">
@@ -173,19 +202,23 @@
       </article>
       <article class="type-card">
         <header><h3>Narzędzie</h3><code>tool</code><span class="tag-basal">rozszerzenie basal</span><span class="tag-exp">eksperymentalne</span></header>
-        <p>Następne narzędzie agenta, wybrane z definicji w formacie OpenAI, MCP albo Anthropic, lub jedna z opcji
-          dodatkowych: odpowiedz bezpośrednio, dopytaj użytkownika, brak odpowiedniego narzędzia. Może też zwrócić ranking
-          albo zestaw narzędzi.</p>
-        <dl><dt>Pytanie</dt><dd>„Co asystent powinien teraz zrobić?”</dd>
-          <dt>Odpowiedź</dt><dd><code>"tool": "refund", "call": true</code></dd></dl>
+        <p>Dla asystentów AI, które mogą same wykonywać działania (tak zwanych agentów). Podajesz listę narzędzi, z których
+          asystent może korzystać, na przykład „sprawdź zamówienie”, „zwróć pieniądze”, „wyślij wiadomość”, opisanych tak
+          samo jak dla OpenAI, Claude czy MCP. Model wybiera, czego użyć teraz.</p>
+        <p>Zamiast narzędzia może też wybrać: odpowiedz od razu, dopytaj użytkownika albo „żadne narzędzie nie pasuje”.</p>
+        <dl><dt>Pytanie</dt><dd>„Co asystent powinien teraz zrobić?” (klient chce zwrotu pieniędzy za uszkodzony laptop)</dd>
+          <dt>Odpowiedź</dt><dd>użyć narzędzia zwrotu pieniędzy: <code>"tool": "refund"</code></dd></dl>
         <a class="try" href="index.html?example=4#try">Wypróbuj</a>
       </article>
       <article class="type-card">
         <header><h3>Akcja</h3><code>act</code><span class="tag-basal">rozszerzenie basal</span><span class="tag-exp">eksperymentalne</span></header>
-        <p>Akcja o najniższym oczekiwanym koszcie według podanej przez Ciebie macierzy kosztów. Z <code>max_error</code>
-          przekazuje decyzję człowiekowi, gdy pewność jest poniżej certyfikowanego progu.</p>
-        <dl><dt>Pytanie</dt><dd>„Czy zwrot przysługuje?” zatwierdź · odrzuć · do człowieka</dd>
-          <dt>Odpowiedź</dt><dd><code>"action": "defer", "deferred": true</code></dd></dl>
+        <p>Decyzja, która bierze pod uwagę koszt pomyłki. Podajesz możliwe działania i to, ile kosztuje każde z nich, gdy
+          prawda okaże się taka albo inna; na przykład błędna decyzja kosztuje 50, a przekazanie sprawy człowiekowi 2.
+          Model wybiera działanie, które średnio kosztuje najmniej.</p>
+        <p>Możesz też ustawić dopuszczalny błąd (<code>max_error</code>, np. 5%). Gdy model nie jest dość pewny, by się w nim
+          zmieścić, sprawa trafia do człowieka.</p>
+        <dl><dt>Pytanie</dt><dd>„Czy zwrot przysługuje?” przyznaj · odmów · do człowieka</dd>
+          <dt>Odpowiedź</dt><dd>do człowieka: pewność 86%, a przy 5% błędu potrzeba 94%: <code>"action": "defer"</code></dd></dl>
         <a class="try" href="index.html?example=5#try">Wypróbuj</a>
       </article>
     </div>
@@ -194,18 +227,18 @@
   <section class="doc-section wrap" id="zastosowania">
     <div class="doc-cols">
       <h2>Do czego to się nadaje</h2>
-      <div class="prose"><p>Wszędzie tam, gdzie z tekstu trzeba wyciągnąć decyzję z określonego zbioru, szybko i z miarą
-        pewności. Obok każdego zastosowania typy, które zwykle do niego pasują.</p></div>
+      <div class="prose"><p>Wszędzie tam, gdzie z tekstu trzeba wyciągnąć decyzję spośród znanych możliwości, szybko i z
+        oceną pewności. Przy każdym zastosowaniu podane są typy pytań, które zwykle do niego pasują.</p></div>
     </div>
     <ul class="uses">
-      <li><h3>Kierowanie zgłoszeń i e-maili</h3><p>Kategorie opisane w zapytaniu, zmieniane bez trenowania, do 255 opcji.</p><span><code>choice</code></span></li>
-      <li><h3>Sprawdzanie reguł i polityk</h3><p>„Czy szkoda jest objęta polisą?”, „Czy wniosek złożono w terminie?”</p><span><code>noul</code> <code>act</code></span></li>
-      <li><h3>Pytania o dokumenty</h3><p>Wyroki, umowy, regulaminy, raporty. Fakty potrzebne do decyzji muszą być w tekście.</p><span><code>choice</code> <code>noul</code></span></li>
-      <li><h3>Decyzje w RAG</h3><p>Czy fragment jest istotny, czy źródła wystarczą do odpowiedzi, czy sobie przeczą, czy twierdzenie ma poparcie.</p><span><code>noul</code> <code>multi</code></span></li>
-      <li><h3>Oceny na skali</h3><p>Pilność, ryzyko, waga incydentu, jakość odpowiedzi.</p><span><code>score</code></span></li>
-      <li><h3>Decyzje agenta</h3><p>Które narzędzie teraz, czy dopytać użytkownika, czy wywołanie wymaga potwierdzenia.</p><span><code>tool</code> <code>act</code></span></li>
-      <li><h3>Ocenianie odpowiedzi</h3><p>Czy odpowiedź jest poprawna i pełna, która z dwóch jest lepsza.</p><span><code>noul</code> <code>choice</code></span></li>
-      <li><h3>Triage z progiem pewności</h3><p>Pewne decyzje przechodzą automatycznie, resztę przegląda człowiek.</p><span><code>act</code> + <code>max_error</code></span></li>
+      <li><h3>Kierowanie zgłoszeń i e-maili</h3><p>Do którego działu albo kategorii trafia wiadomość. Kategorie zmieniasz w każdej chwili, bez trenowania.</p><span>Wybór</span></li>
+      <li><h3>Sprawdzanie reguł</h3><p>„Czy szkoda jest objęta polisą?”, „Czy wniosek złożono w terminie?” Reguła i fakty muszą być w tekście.</p><span>Tak / nie · Akcja</span></li>
+      <li><h3>Pytania o dokumenty</h3><p>Wyroki, umowy, regulaminy, raporty: jaki to rodzaj pisma, czy zawiera daną klauzulę, kto jest stroną.</p><span>Wybór · Tak / nie</span></li>
+      <li><h3>Wyszukiwanie z AI (RAG)</h3><p>Asystent najpierw wyszukuje fragmenty dokumentów, a potem z nich odpowiada. Model ocenia, czy fragment pasuje do pytania, czy fragmenty wystarczą i czy sobie nie przeczą.</p><span>Tak / nie · Etykiety</span></li>
+      <li><h3>Oceny na skali</h3><p>Pilność, ryzyko, waga awarii, jakość odpowiedzi.</p><span>Ocena</span></li>
+      <li><h3>Decyzje asystenta AI</h3><p>Którego narzędzia użyć, czy dopytać użytkownika, czy działanie wymaga potwierdzenia.</p><span>Narzędzie · Akcja</span></li>
+      <li><h3>Ocenianie odpowiedzi</h3><p>Czy odpowiedź jest poprawna i pełna, która z dwóch jest lepsza.</p><span>Tak / nie · Wybór</span></li>
+      <li><h3>Wstępna selekcja z progiem</h3><p>Pewne decyzje przechodzą automatycznie, niepewne trafiają do człowieka.</p><span>Akcja z <code>max_error</code></span></li>
     </ul>
   </section>
 
@@ -213,22 +246,25 @@
     <div class="doc-cols">
       <h2>Pewność i próg</h2>
       <div class="prose">
-        <p>Prawdopodobieństwa są <b>skalibrowane</b>: każdy typ pytania i liczba opcji ma swoją temperaturę, dopasowaną na
-          rodzinach pytań, których model nie widział w treningu. Dzięki temu „90%” znaczy mniej więcej tyle, ile powinno.</p>
-        <p>Plik kalibracji zawiera też <b>progi pewności certyfikowane dla 5% błędu</b>. Decyzje powyżej progu można
-          przyjmować automatycznie, resztę kierować do człowieka, we własnym kodzie albo pytaniem typu akcja z
-          <code>"max_error": 0.05</code>.</p>
+        <p>Każda odpowiedź ma pewność w procentach. Sam model bywa zbyt pewny siebie albo zbyt ostrożny, dlatego jego
+          liczby są <b>skalibrowane</b>, czyli poprawione na pytaniach, których model nie widział w treningu. Cel: żeby
+          „90%” znaczyło, że mniej więcej 9 na 10 takich odpowiedzi jest trafnych.</p>
+        <p>Twórcy modelu sprawdzili też, od jakiej pewności odpowiedzi mylą się nie częściej niż 5 razy na 100. To jest
+          <b>próg pewności</b>. Odpowiedzi powyżej progu można przyjmować automatycznie, a resztę dać do sprawdzenia
+          człowiekowi: we własnym programie albo pytaniem typu Akcja z <code>"max_error": 0.05</code>.</p>
         <table class="doc-table">
-          <thead><tr><th>Typ</th><th class="n">Próg dla 5% błędu</th></tr></thead>
+          <thead><tr><th>Typ pytania</th><th class="n">Próg dla 5% błędu</th></tr></thead>
           <tbody>
-            <tr><td>Wybór (<code>choice</code>)</td><td class="n">92,2%</td></tr>
-            <tr><td>Tak / nie (<code>noul</code>)</td><td class="n">93,6%</td></tr>
-            <tr><td>Ocena (<code>score</code>)</td><td class="n">brak certyfikatu</td></tr>
+            <tr><td>Wybór</td><td class="n">92,2%</td></tr>
+            <tr><td>Tak / nie</td><td class="n">93,6%</td></tr>
+            <tr><td>Ocena</td><td class="n">nie ustalono</td></tr>
           </tbody>
         </table>
-        <p class="note">Progi dla basal-2.0-mini w llama.cpp (<code>CALIBRATION.llamacpp.json</code>). Wyznaczono je na
-          wersji Q8_0, a ta strona używa Q5_K_M, więc traktuj je jako przybliżone. Progu dla 1% błędu nie certyfikowano:
-          <code>"max_error": 0.01</code> odracza każdą decyzję.</p>
+        <p>Przykład: odpowiedź „tak” z pewnością 95% można przyjąć automatycznie, a z pewnością 86% lepiej dać
+          człowiekowi.</p>
+        <p class="note">Progi wyznaczono dla dokładniejszej wersji modelu (Q8_0, 1,6 GB); ta strona używa lżejszej
+          (Q5_K_M, 1,17 GB), więc traktuj je jako przybliżone. Dla 1% błędu progów nie ustalono, więc taka granica
+          przekazałaby człowiekowi każdą decyzję.</p>
       </div>
     </div>
   </section>
@@ -238,18 +274,22 @@
       <h2>Dobre praktyki</h2>
       <div class="prose">
         <ul class="tips">
-          <li><b>Opcje mają się wykluczać</b> i być zrozumiałe bez kontekstu: „Opóźniona dostawa”, nie „Inne 2”.</li>
-          <li><b>Klucze.</b> Domyślnie model widzi „klucz: opis”. Gdy klucze są techniczne (<code>opt_1</code>), ustaw
-            <code>"option_keys": "hide"</code>, a model zobaczy same opisy.</li>
-          <li><b>Kilka pytań o ten sam tekst</b> wysyłaj w jednym zapytaniu: stan liczy się raz, a kolejne pytania kosztują
+          <li><b>Opcje mają się wykluczać</b> i być zrozumiałe same w sobie: „Opóźniona dostawa”, a nie „Inne 2”.</li>
+          <li><b>Klucz i opis.</b> Każda opcja ma klucz, czyli krótką nazwę, którą dostajesz w odpowiedzi (np.
+            <code>complaint</code>), i opis, który czyta model. Domyślnie model widzi oba: „complaint: Reklamacja towaru”.
+            Gdy klucze są techniczne, np. <code>opt_1</code>, ukryj je: w formularzu odznacz „Pokaż modelowi klucze”.</li>
+          <li><b>Kilka pytań o ten sam tekst zadawaj razem.</b> Tekst jest czytany raz, a każde kolejne pytanie zajmuje
             sekundę lub dwie.</li>
-          <li><b>Fakty do stanu.</b> Mały model ma ograniczoną wiedzę o świecie, a przepisy się zmieniają. Wszystko, co
-            potrzebne do decyzji, umieść w tekście.</li>
-          <li><b>Rachunki i daty licz w kodzie.</b> Dokładna arytmetyka to słaby punkt decyzji w jednym kroku.</li>
-          <li><b>Sprawdź na swoich danych</b>, zanim zaczniesz polegać na decyzjach, zwłaszcza tych, które dotyczą ludzi.</li>
+          <li><b>Fakty wpisuj do stanu.</b> Mały model wie niewiele o świecie, a przepisy się zmieniają. Wszystko, czego
+            potrzeba do decyzji, powinno być w tekście.</li>
+          <li><b>Rachunki i daty policz wcześniej</b> i wpisz wynik do tekstu. Liczenie to słaba strona modelu, który
+            decyduje w jednym kroku.</li>
+          <li><b>Sprawdź na swoich danych</b>, zanim zaczniesz polegać na decyzjach, zwłaszcza dotyczących ludzi. Pomoże
+            w tym sekcja <a href="index.html#batch">Wiele wierszy</a>: wgrywasz plik z prawidłowymi odpowiedziami i widzisz
+            trafność.</li>
         </ul>
-        <p class="note">Czym to nie jest: to nie czat (model nie pisze tekstu), nie uzasadnia decyzji (zwraca tylko
-          prawdopodobieństwa), nie jest bazą wiedzy ani kalkulatorem.</p>
+        <p class="note">Czym to nie jest: to nie czat (model nie pisze tekstu), nie uzasadnia decyzji słowami (choć
+          przycisk „Dlaczego?” pokazuje, które zdania na nią wpłynęły), nie jest encyklopedią ani kalkulatorem.</p>
       </div>
     </div>
   </section>
@@ -259,13 +299,17 @@
       <h2>W tej przeglądarce</h2>
       <div class="prose">
         <ul class="tips">
-          <li>Model <b>basal-2.0-mini</b> (1,5 mld parametrów, Q5_K_M), polski i angielski.</li>
-          <li>Wszystkie <b>sześć typów pytań</b>, do 255 opcji, prompt do 8192 tokenów.</li>
-          <li>Język promptu wybierany jak w basal: polski, gdy tekst lub pytanie ma polskie litery. Można go wymusić polem
-            <code>"lang"</code>.</li>
-          <li>Niedostępne tutaj: <code>"facts": "auto"</code> (wyliczane daty i kwoty), <code>evidence</code> (basal-2.0
-            go nie ma) i tryb myślenia (tylko większy model).</li>
-          <li>Prompty, odczyt i kalibracja zgodne z silnikiem basal i sprawdzone z basal-serve.</li>
+          <li><b>Model:</b> basal-2.0-mini, 1,5 mld parametrów, w lżejszej wersji Q5_K_M (1,17 GB), po polsku i angielsku.
+            Pobiera się raz i zostaje w przeglądarce.</li>
+          <li><b>Pytania:</b> wszystkie sześć typów, do 255 opcji w jednym pytaniu.</li>
+          <li><b>Długość:</b> stan, pytanie i opcje razem do 8192 tokenów, czyli około 25 tysięcy znaków (kilkanaście stron
+            tekstu).</li>
+          <li><b>Język:</b> prompt jest po polsku, gdy tekst albo pytanie ma polskie litery, a w przeciwnym razie po
+            angielsku. W formularzu możesz to zmienić („Język promptu”).</li>
+          <li><b>Czego tu nie ma:</b> automatycznie wyliczanych faktów o datach i kwotach (<code>facts</code>), wskazywania
+            fragmentów-dowodów (<code>evidence</code>; model 2.0 tego nie ma) i trybu myślenia (tylko w większym modelu).</li>
+          <li><b>Zgodność:</b> prompty, odczyt i kalibracja są takie jak w oryginalnym silniku basal i zostały z nim
+            porównane.</li>
         </ul>
         <div class="doc-cta">
           <a class="btn btn-primary" href="index.html#try">Wypróbuj w przeglądarce</a>
@@ -274,25 +318,46 @@
       </div>
     </div>
   </section>
+
+  <section class="doc-section wrap" id="slowniczek">
+    <div class="doc-cols">
+      <h2>Słowniczek</h2>
+      <dl class="gloss">
+        <dt>Stan</dt><dd>Tekst (albo zestaw pól), o który pytasz.</dd>
+        <dt>Prompt</dt><dd>Pełny tekst, który dostaje model: stan, pytanie i opcje oznaczone literami A, B, C…</dd>
+        <dt>Token</dt><dd>Kawałek słowa; z nich model składa i czyta tekst. Średnio 3–4 znaki.</dd>
+        <dt>Prawdopodobieństwo</dt><dd>Liczba od 0 do 1 (0–100%): jak bardzo model skłania się ku danej odpowiedzi.</dd>
+        <dt>Pewność</dt><dd>Prawdopodobieństwo odpowiedzi, którą model wybrał.</dd>
+        <dt>Kalibracja</dt><dd>Poprawka, dzięki której pewność odpowiada rzeczywistej trafności.</dd>
+        <dt>Próg pewności</dt><dd>Pewność, powyżej której odpowiedzi myliły się nie częściej niż 5 razy na 100.</dd>
+        <dt>Agent</dt><dd>Asystent AI, który może sam wykonywać działania, na przykład korzystać z narzędzi.</dd>
+        <dt>RAG</dt><dd>Sposób odpowiadania, w którym asystent najpierw wyszukuje fragmenty dokumentów, a potem na ich
+          podstawie odpowiada.</dd>
+        <dt>JSON</dt><dd>Tekstowy format danych, w którym programy wymieniają informacje.</dd>
+        <dt>Q5_K_M, Q8_0</dt><dd>Wersje tego samego modelu, zapisane z różną dokładnością. Mniejsza zajmuje mniej miejsca,
+          większa jest odrobinę dokładniejsza.</dd>
+      </dl>
+    </div>
+  </section>
 </main>
 
 <!-- ============================================================================================================ EN -->
 <main class="doc" data-doc="en" lang="en" hidden>
   <section class="doc-hero wrap">
-    <p class="eyebrow">System One · a decision interface</p>
+    <p class="eyebrow">System One · decisions instead of text</p>
     <h1>Ask about a&nbsp;text. Get a&nbsp;decision with a&nbsp;probability.</h1>
-    <p class="lede">System One is a way of asking a model questions whose answers are fixed in advance: a choice from a
-      list, yes or no, a level on a scale. The model doesn't write an answer. It reads the text, scores every allowed
-      answer and returns the probabilities in one step. The answer can't fall outside the options you gave, and the
-      probability says how sure the model is.</p>
+    <p class="lede">An ordinary chatbot writes its answer in its own words. System One works differently: you say up front
+      which answers are allowed, for example three ticket categories or “yes” and “no”, and the model picks one of them and
+      says how sure it is. It can’t make up an answer outside the list, and its confidence in percent helps you decide when
+      to trust it straight away and when to hand the case to a person.</p>
     <div class="doc-cta">
       <a class="btn btn-primary" href="index.html#try">Try it in your browser</a>
       <a class="btn btn-ghost" href="#types">Question types</a>
     </div>
     <nav class="toc" aria-label="On this page">
-      <a href="#name">The name</a><a href="#request">Request and answer</a><a href="#types">Question types</a>
+      <a href="#name">The name</a><a href="#request">What a question looks like</a><a href="#types">Question types</a>
       <a href="#uses">Uses</a><a href="#confidence">Confidence and thresholds</a><a href="#practice">Good practice</a>
-      <a href="#here">In this browser</a>
+      <a href="#here">In this browser</a><a href="#glossary">Glossary</a>
     </nav>
   </section>
 
@@ -300,17 +365,18 @@
     <div class="doc-cols">
       <h2>The name</h2>
       <div class="prose">
-        <p>The name refers to “System 1” from cognitive psychology: fast, intuitive thinking that recognises a situation
-          and picks a response at once, without writing out the reasoning. The model works the same way: one pass over the
-          text and one decision, instead of a long answer written word by word.</p>
-        <p>System One is also the name of the interface itself: a <code>POST /v1/systemone</code> request with a state and
-          questions, and an answer with probabilities. The basal engine implements it, and this page does the same in the
-          browser. The name basal comes from the <i>basal ganglia</i>, the part of the brain that selects one action among
-          competing ones.</p>
+        <p>The name refers to “System 1” from psychology (Daniel Kahneman, “Thinking, Fast and Slow”): fast, intuitive
+          thinking that recognises a situation and picks a response at once. The model works the same way. It reads the
+          text once and points to an answer straight away, instead of writing a long reply word by word. That makes it
+          fast and predictable.</p>
+        <p>System One is also the name of the format in which programs send such questions and receive the answers
+          (described below). The basal engine supports it, and this page does the same in your browser. The word basal
+          comes from the <i>basal ganglia</i>, the part of the brain that picks one action among several possible ones.</p>
         <div class="callout">
-          <b>A dynamic classifier.</b> You describe the classes in the request, in plain language, on every call, instead
-          of training a classifier. The same model routes tickets today, checks a filing deadline tomorrow and rates the
-          urgency of an incident next week, each time with new options and no training.
+          <b>No training.</b> To make a computer sort texts into categories, you would normally collect thousands of
+          examples and train a separate model, a so-called classifier. Here you describe the categories in plain words in
+          the question itself. The same model can route tickets to teams today, check deadlines in letters tomorrow and
+          rate the urgency of outages next week, each time with new options.
         </div>
       </div>
     </div>
@@ -318,16 +384,22 @@
 
   <section class="doc-section wrap" id="request">
     <div class="doc-cols">
-      <h2>Request and answer</h2>
+      <h2>What a question looks like</h2>
       <div class="prose">
-        <p>A request has two parts. The <b>state</b> is text or JSON: a message, a document, a record, search results, an
-          agent's trace. You name the <b>questions</b> yourself; each has a type, a text and the allowed answers. Several
-          questions over the same state are computed together, and the state is read once.</p>
+        <p>A question to the model has two parts:</p>
+        <ul class="tips">
+          <li><b>The state</b>: the text you are asking about, for example a support ticket, an e-mail or a clause of a
+            contract. It can also be a set of fields, for example the message and the customer’s details.</li>
+          <li><b>The questions</b>: one or several. Each has a name, a type, a text and a list of allowed answers. Several
+            questions about the same state are computed together, and the model reads the state only once.</li>
+        </ul>
+        <p>Programs send this as JSON, as in the example below. On this page you don’t need to write JSON: the form does
+          the same.</p>
       </div>
     </div>
     <div class="code-pair">
       <figure>
-        <figcaption>Request</figcaption>
+        <figcaption>Question</figcaption>
 <pre><code>{
   "state": "Customer: I ordered a kettle on 12 May,
             it arrived with a cracked case. Please replace it.",
@@ -372,39 +444,62 @@
 }</code></pre>
       </figure>
     </div>
+    <div class="fields">
+      <div>
+        <h3>What the question holds</h3>
+        <dl>
+          <dt><code>state</code></dt><dd>the state: the text you are asking about</dd>
+          <dt><code>questions</code></dt><dd>the questions; <code>category</code> and <code>photo</code> are names you choose</dd>
+          <dt><code>type</code></dt><dd>the question type (see below): <code>choice</code> is a choice, <code>noul</code> is yes/no</dd>
+          <dt><code>instructions</code></dt><dd>the text of the question</dd>
+          <dt><code>criteria</code></dt><dd>the allowed answers: a short key on the left, the description the model reads on the right</dd>
+        </dl>
+      </div>
+      <div>
+        <h3>What the answer holds</h3>
+        <dl>
+          <dt><code>choice</code></dt><dd>the chosen option, by its key</dd>
+          <dt><code>probabilities</code></dt><dd>the probability of every option; together they make 1, that is 100%</dd>
+          <dt><code>confidence</code></dt><dd>the confidence: the probability of the chosen answer (0.95 is 95%)</dd>
+          <dt><code>noul</code></dt><dd>the probability of “yes” (0.77 is 77%)</dd>
+        </dl>
+      </div>
+    </div>
   </section>
 
   <section class="doc-section wrap" id="types">
     <div class="doc-cols">
       <h2>Question types</h2>
       <div class="prose">
-        <p>The System One interface defines three types: choice, yes/no and score (marked “System One”). The basal engine
-          adds three more: labels, tool and action (marked “basal extension”). Tool and action are marked experimental in the
-          basal engine. This page supports all six.</p>
+        <p>The type of a question says what kind of answer you expect. Three basic types come from the System One format
+          (marked “System One”); the basal engine adds three more (marked “basal extension”). The basal authors marked two
+          of them experimental: they work, but their quality isn’t yet proven enough to rely on them without a person
+          checking. This page supports all six.</p>
       </div>
     </div>
     <div class="types">
       <article class="type-card">
         <header><h3>Choice</h3><code>choice</code><span class="tag-so">System One</span></header>
-        <p>One answer from a list of 2 to 255 options. You get the probability of every option, the most probable one and
-          its confidence.</p>
-        <dl><dt>Question</dt><dd>“Which team should handle this ticket?”</dd>
-          <dt>Answer</dt><dd><code>"choice": "support", "confidence": 0.96</code></dd></dl>
+        <p>Exactly one answer from a list of 2 to 255 options. The model gives the probability of every option and points
+          to the most probable one.</p>
+        <dl><dt>Question</dt><dd>“Which team should handle this ticket?” sales · support · complaints</dd>
+          <dt>Answer</dt><dd>support, with 96% confidence: <code>"choice": "support"</code></dd></dl>
         <a class="try" href="index.html?example=2#try">Try it</a>
       </article>
       <article class="type-card">
         <header><h3>Yes / no</h3><code>noul</code><span class="tag-so">System One</span></header>
-        <p>The probability of “yes”. You can describe what yes and no mean for the question.</p>
+        <p>A closed question. The answer is one number: the probability of “yes”. You can write what “yes” and “no” mean
+          for this question, for example “Yes, ask for a photo”.</p>
         <dl><dt>Question</dt><dd>“Was the appeal filed on time?”</dd>
-          <dt>Answer</dt><dd><code>"noul": 0.93</code></dd></dl>
+          <dt>Answer</dt><dd>yes, at 93%: <code>"noul": 0.93</code></dd></dl>
         <a class="try" href="index.html?example=1#try">Try it</a>
       </article>
       <article class="type-card">
         <header><h3>Score</h3><code>score</code><span class="tag-so">System One</span></header>
-        <p>A distribution over ordered levels, lowest first, and the expected level: 0 is the first, 1.5 is halfway
-          between the second and the third.</p>
-        <dl><dt>Question</dt><dd>“How urgent is this ticket?” low · medium · high · critical</dd>
-          <dt>Answer</dt><dd><code>"score": 2.6</code></dd></dl>
+        <p>A rating on a scale you give, lowest step first. The model gives the probability of every step and a result:
+          the average step, weighted by those probabilities. Steps are counted from zero.</p>
+        <dl><dt>Question</dt><dd>“How urgent is this ticket?” low (0) · medium (1) · high (2) · critical (3)</dd>
+          <dt>Answer</dt><dd>2.6: between “high” and “critical”, closer to critical: <code>"score": 2.6</code></dd></dl>
         <a class="try" href="index.html?example=0#try">Try it</a>
       </article>
       <article class="type-card">
@@ -419,18 +514,23 @@
       </article>
       <article class="type-card">
         <header><h3>Tool</h3><code>tool</code><span class="tag-basal">basal extension</span><span class="tag-exp">experimental</span></header>
-        <p>An agent's next tool, chosen from OpenAI, MCP or Anthropic definitions, or one of the extra options: answer
-          directly, ask the user, no suitable tool. It can also return a ranking or a set of tools.</p>
-        <dl><dt>Question</dt><dd>“What should the assistant do next?”</dd>
-          <dt>Answer</dt><dd><code>"tool": "refund", "call": true</code></dd></dl>
+        <p>For AI assistants that can take actions themselves (so-called agents). You give the list of tools the
+          assistant may use, for example “look up an order”, “refund the money”, “send a message”, described the same way
+          as for OpenAI, Claude or MCP. The model picks what to use now.</p>
+        <p>Instead of a tool it can also pick: answer directly, ask the user, or “no suitable tool”.</p>
+        <dl><dt>Question</dt><dd>“What should the assistant do next?” (a customer wants a refund for a damaged laptop)</dd>
+          <dt>Answer</dt><dd>use the refund tool: <code>"tool": "refund"</code></dd></dl>
         <a class="try" href="index.html?example=4#try">Try it</a>
       </article>
       <article class="type-card">
         <header><h3>Action</h3><code>act</code><span class="tag-basal">basal extension</span><span class="tag-exp">experimental</span></header>
-        <p>The action with the lowest expected cost under the cost matrix you give. With <code>max_error</code> it hands
-          the decision to a person when the confidence is below the certified threshold.</p>
-        <dl><dt>Question</dt><dd>“Is a refund due?” approve · reject · to a person</dd>
-          <dt>Answer</dt><dd><code>"action": "defer", "deferred": true</code></dd></dl>
+        <p>A decision that weighs the cost of a mistake. You give the possible actions and what each of them costs if the
+          truth turns out one way or the other; for example a wrong decision costs 50 and handing the case to a person
+          costs 2. The model picks the action that costs least on average.</p>
+        <p>You can also set an acceptable error (<code>max_error</code>, e.g. 5%). When the model isn’t sure enough to stay
+          within it, the case goes to a person.</p>
+        <dl><dt>Question</dt><dd>“Is a refund due?” grant · refuse · to a person</dd>
+          <dt>Answer</dt><dd>to a person: 86% confident, while a 5% error needs 94%: <code>"action": "defer"</code></dd></dl>
         <a class="try" href="index.html?example=5#try">Try it</a>
       </article>
     </div>
@@ -439,18 +539,18 @@
   <section class="doc-section wrap" id="uses">
     <div class="doc-cols">
       <h2>What it is good for</h2>
-      <div class="prose"><p>Anywhere a decision from a known set has to come out of a text, quickly and with a measure of
-        confidence. Next to each use, the types that usually fit it.</p></div>
+      <div class="prose"><p>Anywhere a decision among known options has to come out of a text, quickly and with a measure
+        of confidence. Each use lists the question types that usually fit it.</p></div>
     </div>
     <ul class="uses">
-      <li><h3>Routing tickets and e-mails</h3><p>Categories described in the request, changed without training, up to 255 options.</p><span><code>choice</code></span></li>
-      <li><h3>Rule and policy checks</h3><p>“Is the claim covered?”, “Was the application filed in time?”</p><span><code>noul</code> <code>act</code></span></li>
-      <li><h3>Questions about documents</h3><p>Judgments, contracts, terms, reports. The facts the decision needs must be in the text.</p><span><code>choice</code> <code>noul</code></span></li>
-      <li><h3>RAG decisions</h3><p>Is a passage relevant, do the sources suffice to answer, do they conflict, is a claim supported.</p><span><code>noul</code> <code>multi</code></span></li>
-      <li><h3>Scores on a scale</h3><p>Urgency, risk, severity of an incident, quality of an answer.</p><span><code>score</code></span></li>
-      <li><h3>Agent decisions</h3><p>Which tool now, whether to ask the user, whether a call needs confirmation.</p><span><code>tool</code> <code>act</code></span></li>
-      <li><h3>Judging answers</h3><p>Is an answer correct and complete, which of two answers is better.</p><span><code>noul</code> <code>choice</code></span></li>
-      <li><h3>Triage with a confidence threshold</h3><p>Confident decisions go through automatically, a person reviews the rest.</p><span><code>act</code> + <code>max_error</code></span></li>
+      <li><h3>Routing tickets and e-mails</h3><p>Which team or category a message belongs to. You change the categories any time, without training.</p><span>Choice</span></li>
+      <li><h3>Checking rules</h3><p>“Is the claim covered?”, “Was the application filed in time?” The rule and the facts must be in the text.</p><span>Yes / no · Action</span></li>
+      <li><h3>Questions about documents</h3><p>Judgments, contracts, terms, reports: what kind of document it is, whether it has a given clause, who the parties are.</p><span>Choice · Yes / no</span></li>
+      <li><h3>AI search (RAG)</h3><p>The assistant first finds passages in documents and then answers from them. The model checks whether a passage fits the question, whether the passages are enough and whether they contradict each other.</p><span>Yes / no · Labels</span></li>
+      <li><h3>Ratings on a scale</h3><p>Urgency, risk, severity of an outage, quality of an answer.</p><span>Score</span></li>
+      <li><h3>AI assistant decisions</h3><p>Which tool to use, whether to ask the user, whether an action needs confirmation.</p><span>Tool · Action</span></li>
+      <li><h3>Judging answers</h3><p>Is an answer correct and complete, which of two answers is better.</p><span>Yes / no · Choice</span></li>
+      <li><h3>Triage with a threshold</h3><p>Confident decisions go through automatically, uncertain ones go to a person.</p><span>Action with <code>max_error</code></span></li>
     </ul>
   </section>
 
@@ -458,22 +558,24 @@
     <div class="doc-cols">
       <h2>Confidence and thresholds</h2>
       <div class="prose">
-        <p>The probabilities are <b>calibrated</b>: each question type and option count has its own temperature, fitted on
-          question families the model never saw in training. So “90%” means roughly what it should.</p>
-        <p>The calibration file also holds <b>confidence thresholds certified for a 5% error</b>. Decisions above the
-          threshold can be accepted automatically and the rest sent to a person, in your own code or with an action
-          question and <code>"max_error": 0.05</code>.</p>
+        <p>Every answer has a confidence in percent. On its own the model can be overconfident or too cautious, so its
+          numbers are <b>calibrated</b>: corrected on questions the model never saw in training. The aim: “90%” should mean
+          that roughly 9 in 10 such answers are right.</p>
+        <p>The model’s authors also checked from which confidence the answers are wrong no more than 5 times in 100. That
+          is the <b>confidence threshold</b>. Answers above it can be accepted automatically and the rest given to a person
+          to check, in your own program or with an Action question and <code>"max_error": 0.05</code>.</p>
         <table class="doc-table">
-          <thead><tr><th>Type</th><th class="n">Threshold for 5% error</th></tr></thead>
+          <thead><tr><th>Question type</th><th class="n">Threshold for 5% error</th></tr></thead>
           <tbody>
-            <tr><td>Choice (<code>choice</code>)</td><td class="n">92.2%</td></tr>
-            <tr><td>Yes / no (<code>noul</code>)</td><td class="n">93.6%</td></tr>
-            <tr><td>Score (<code>score</code>)</td><td class="n">not certified</td></tr>
+            <tr><td>Choice</td><td class="n">92.2%</td></tr>
+            <tr><td>Yes / no</td><td class="n">93.6%</td></tr>
+            <tr><td>Score</td><td class="n">none set</td></tr>
           </tbody>
         </table>
-        <p class="note">Thresholds for basal-2.0-mini on llama.cpp (<code>CALIBRATION.llamacpp.json</code>). They were
-          fitted on the Q8_0 file and this page runs Q5_K_M, so treat them as approximate. No threshold is certified for a
-          1% error: <code>"max_error": 0.01</code> defers every decision.</p>
+        <p>For example: a “yes” at 95% confidence can be accepted automatically; at 86% it is better given to a person.</p>
+        <p class="note">The thresholds were set for the more precise version of the model (Q8_0, 1.6 GB); this page runs
+          the lighter one (Q5_K_M, 1.17 GB), so treat them as approximate. No thresholds were set for a 1% error, so such a
+          limit would send every decision to a person.</p>
       </div>
     </div>
   </section>
@@ -484,17 +586,22 @@
       <div class="prose">
         <ul class="tips">
           <li><b>Options should exclude each other</b> and make sense on their own: “Late delivery”, not “Other 2”.</li>
-          <li><b>Keys.</b> By default the model sees “key: description”. When the keys are technical (<code>opt_1</code>),
-            set <code>"option_keys": "hide"</code> and the model sees the descriptions only.</li>
-          <li><b>Several questions about one text</b> belong in one request: the state is computed once, and later
-            questions cost a second or two.</li>
+          <li><b>Key and description.</b> Every option has a key, a short name you get back in the answer (e.g.
+            <code>complaint</code>), and a description the model reads. By default the model sees both: “complaint: Faulty
+            product”. When the keys are technical, e.g. <code>opt_1</code>, hide them: in the form, untick “Show keys to
+            the model”.</li>
+          <li><b>Ask several questions about one text together.</b> The text is read once, and each further question takes
+            a second or two.</li>
           <li><b>Put the facts in the state.</b> A small model knows little about the world, and rules change. Everything
-            the decision needs belongs in the text.</li>
-          <li><b>Do arithmetic and dates in code.</b> Exact arithmetic is a weak spot of one-step decisions.</li>
-          <li><b>Check it on your own data</b> before you rely on its decisions, especially decisions about people.</li>
+            the decision needs should be in the text.</li>
+          <li><b>Work out sums and dates beforehand</b> and put the result in the text. Arithmetic is a weak spot of a
+            model that decides in one step.</li>
+          <li><b>Check it on your own data</b> before you rely on its decisions, especially decisions about people. The
+            <a href="index.html#batch">Many rows</a> section helps: upload a file with the correct answers and see the
+            accuracy.</li>
         </ul>
-        <p class="note">What it is not: a chat (the model writes no text), an explanation (it returns probabilities
-          only), a knowledge base or a calculator.</p>
+        <p class="note">What it is not: a chatbot (the model writes no text), an explanation in words (though the “Why?”
+          button shows which sentences moved the answer), an encyclopedia or a calculator.</p>
       </div>
     </div>
   </section>
@@ -504,19 +611,43 @@
       <h2>In this browser</h2>
       <div class="prose">
         <ul class="tips">
-          <li>The <b>basal-2.0-mini</b> model (1.5B parameters, Q5_K_M), Polish and English.</li>
-          <li>All <b>six question types</b>, up to 255 options, prompts up to 8,192 tokens.</li>
-          <li>The prompt language is chosen as basal does it: Polish when the text or the question has Polish letters. The
-            <code>"lang"</code> field forces one.</li>
-          <li>Not available here: <code>"facts": "auto"</code> (computed dates and amounts), <code>evidence</code>
-            (basal-2.0 has none) and the thinking mode (larger model only).</li>
-          <li>Prompts, readout and calibration follow the basal engine and are checked against basal-serve.</li>
+          <li><b>Model:</b> basal-2.0-mini, 1.5 billion parameters, in the lighter Q5_K_M version (1.17 GB), Polish and
+            English. It downloads once and stays in the browser.</li>
+          <li><b>Questions:</b> all six types, up to 255 options in one question.</li>
+          <li><b>Length:</b> the state, the question and the options together up to 8,192 tokens, that is about 25,000
+            characters (a dozen or so pages of text).</li>
+          <li><b>Language:</b> the prompt is in Polish when the text or the question has Polish letters, otherwise in
+            English. The form lets you change that (“Prompt language”).</li>
+          <li><b>Not available here:</b> automatically computed facts about dates and amounts (<code>facts</code>), evidence
+            passages (<code>evidence</code>; model 2.0 has none) and the thinking mode (larger model only).</li>
+          <li><b>Faithfulness:</b> prompts, readout and calibration match the original basal engine and were compared with
+            it.</li>
         </ul>
         <div class="doc-cta">
           <a class="btn btn-primary" href="index.html#try">Try it in your browser</a>
           <a class="btn btn-ghost" href="https://github.com/rkinas/basal" rel="noopener">basal engine documentation</a>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section class="doc-section wrap" id="glossary">
+    <div class="doc-cols">
+      <h2>Glossary</h2>
+      <dl class="gloss">
+        <dt>State</dt><dd>The text (or set of fields) you are asking about.</dd>
+        <dt>Prompt</dt><dd>The full text the model receives: the state, the question and the options marked with the letters A, B, C…</dd>
+        <dt>Token</dt><dd>A piece of a word; the model reads and builds text from them. On average 3–4 characters.</dd>
+        <dt>Probability</dt><dd>A number from 0 to 1 (0–100%): how strongly the model leans to an answer.</dd>
+        <dt>Confidence</dt><dd>The probability of the answer the model chose.</dd>
+        <dt>Calibration</dt><dd>A correction that makes the confidence match how often the answers are actually right.</dd>
+        <dt>Confidence threshold</dt><dd>The confidence above which answers were wrong no more than 5 times in 100.</dd>
+        <dt>Agent</dt><dd>An AI assistant that can take actions itself, for example use tools.</dd>
+        <dt>RAG</dt><dd>A way of answering in which the assistant first finds passages in documents and then answers from them.</dd>
+        <dt>JSON</dt><dd>A text format in which programs exchange data.</dd>
+        <dt>Q5_K_M, Q8_0</dt><dd>Versions of the same model stored at different precision. The smaller one takes less
+          space; the larger one is slightly more precise.</dd>
+      </dl>
     </div>
   </section>
 </main>
