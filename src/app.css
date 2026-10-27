@@ -389,6 +389,8 @@ pre.prompt mark { background: var(--accent-wash); color: inherit; border-radius:
 .drop:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
 .drop u { color: var(--accent); text-underline-offset: 3px; }
 .bt-sample { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.bt-sample-dl { font-size: 14px; color: var(--ink-2); }
+.bt-sample-dl a { font-weight: 600; }
 .bt-info { margin: 0; font-size: 14px; color: var(--ink-2); }
 .bt-inline { display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; color: var(--ink-2); }
 .bt-preview { max-height: 230px; overflow: auto; border: 1px solid var(--line); border-radius: var(--r-s); }

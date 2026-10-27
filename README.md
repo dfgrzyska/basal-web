@@ -22,7 +22,7 @@ answers ◄── calibration + typed answers ◄──── answer position �
 | `src/i18n.js` | the page's English and Polish texts |
 | `src/batch-ui.js`, `src/table.js`, `src/stats.js`, `src/store.js` | many rows: reading CSV / TSV / JSONL / XLSX, the run (pause, resume, stop, saved in IndexedDB), grading against a column of correct answers, export |
 | `src/explain.js` | "Why?": each sentence or field of the state left out in turn, and the change of the answer |
-| `examples/zgloszenia.csv` | the sample file: 24 made-up Polish support tickets with their correct category |
+| `examples/zgloszenia.csv`, `.xlsx` | the sample file (downloadable from the page): 24 made-up Polish support tickets with their correct category; `tools/make_sample.mjs` writes the XLSX and the CSV's BOM |
 | `src/presets.js`, `src/example-result.json` | the examples, and one real run of the first one (shown before the model is loaded) |
 | `src/basal.js` | port of the basal engine's prompt format 2: request → prompts, readout → calibrated typed answers (`choice`, `noul`, `score`, `multi`, `tool`, `act`) |
 | `src/sets.js` | `multi` set selection (threshold, exact, expected IoU / F1), port of `basal/sets.py` |

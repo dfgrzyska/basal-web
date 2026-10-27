@@ -153,7 +153,11 @@ export function initBatch(root, { engine, calibration, getRequest, setExample, r
         <input type="file" id="bt-input" accept=".csv,.tsv,.txt,.jsonl,.ndjson,.xlsx" ${ui.run === 'running' ? 'disabled' : ''}>
         <span>${t('batch.drop')}</span>
       </label>
+      <p class="hint">${esc(t('batch.format'))}</p>
       <div class="bt-sample"><button type="button" class="btn btn-ghost" id="bt-sample" ${ui.run === 'running' ? 'disabled' : ''}>${esc(t('batch.sample'))}</button>
+        <span class="bt-sample-dl">${esc(t('batch.downloadSample'))}
+          <a href="${new URL('../examples/zgloszenia.csv', import.meta.url).href}" download="zgloszenia.csv">CSV</a> ·
+          <a href="${new URL('../examples/zgloszenia.xlsx', import.meta.url).href}" download="zgloszenia.xlsx">XLSX</a></span>
         <span class="hint">${esc(t('batch.sampleNote'))}</span></div>
       <p id="bt-file-msg"></p>${info}${sheetSel}${preview}`;
   }
